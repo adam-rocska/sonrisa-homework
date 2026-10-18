@@ -7,12 +7,16 @@ installation and Google account, with the owner completing consent.
 
 ## Automated results
 
+All checks below were rerun together after the final application changes,
+at approximately 22:05 Europe/Budapest on 2026-10-18. See the
+[final release record](../process/2026-10-18-final-release.md).
+
 | Check | Result | What it establishes |
 | --- | --- | --- |
 | `pnpm typecheck` | PASS | Strict TypeScript across all packages and process probes |
 | `pnpm lint` | PASS | ESLint, no explicit any and consistent type imports |
 | `pnpm format:check` | PASS | Reproducible explicit formatting |
-| Unit suites | **156 passed in aggregate** | Core 54, server 48 unchanged; extension 54 rerun after the live-sync fix; 23 test files |
+| Unit suites | **156 passed in one final run** | Core 54, server 48, extension 54; 23 test files |
 | `pnpm build` | PASS | Server/contracts/core type validation; Plasmo Chrome MV3 bundle |
 | `pnpm test:resilience` | PASS | Actual SIGKILL during a leased delivery; durable retry after restart; no replay on another restart |
 | `pnpm test:delivery` | PASS | Isolated RSS HTTP → SQLite → actual email subprocess and Slack HTTP adapter; 429/retry/restart/deduplication |
