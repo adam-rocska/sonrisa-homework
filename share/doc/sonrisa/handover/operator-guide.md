@@ -30,10 +30,15 @@ Run from the repository root. Pin pnpm rather than changing global tools.
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test:resilience
+pnpm test:http
+pnpm test:delivery
 pnpm --filter @signalpost/extension package
-cp etc/signalpost.env.example etc/signalpost.env
+cp -n etc/signalpost.env.example etc/signalpost.env
 chmod 600 etc/signalpost.env
 ```
+
+The copy command preserves an existing local configuration. Never replace
+a configured environment file with the blank example during an update.
 
 Load `src/extension/build/chrome-mv3-prod` through Chrome's
 `chrome://extensions` → Developer mode → Load unpacked. The packaged ZIP

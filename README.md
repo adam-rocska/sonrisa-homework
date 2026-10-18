@@ -11,6 +11,19 @@ Chrome/Chromium is the first target. Safari and mobile are outside this pilot.
 The GUI includes English and Hungarian, browser-local language selection,
 and RTL-ready layout; additional languages use typed translation catalogues.
 
+## Suggested review path
+
+Start with the [reviewer guide](share/doc/sonrisa/handover/reviewer-summary.md)
+for the scoped result, key corrections and evidence boundaries.
+
+The assignment evaluates the reasoning and validation process. Continue with
+[the original brief](share/doc/sonrisa/sources/assignment-extracted.txt),
+then [the implementation plan](share/doc/sonrisa/process/2026-10-18-implementation-preflight.md)
+and [decisions, rejected outputs and corrections](share/doc/sonrisa/process/2026-10-18-implementation-log.md).
+The [verification record](share/doc/sonrisa/handover/verification.md) separates
+automated checks, real Chrome acceptance and remaining external-service
+checks. The handover links below explain how to reproduce and operate it.
+
 ## Run locally
 
 Use Node 24 and pnpm 10.28.2. From the repository root:
@@ -19,12 +32,15 @@ Use Node 24 and pnpm 10.28.2. From the repository root:
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test:resilience
+pnpm test:http
 pnpm test:delivery
 pnpm --filter @signalpost/extension package
-cp etc/signalpost.env.example etc/signalpost.env
+cp -n etc/signalpost.env.example etc/signalpost.env
 chmod 600 etc/signalpost.env
 pnpm start
 ```
+
+The copy command preserves an existing local configuration.
 
 Load `src/extension/build/chrome-mv3-prod` as an unpacked extension in
 `chrome://extensions` (Developer mode). Copy its ID to `EXTENSION_IDS`
