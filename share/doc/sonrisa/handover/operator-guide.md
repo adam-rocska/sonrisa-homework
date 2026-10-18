@@ -89,6 +89,27 @@ unavailable. Restart after changing configuration. Open extension Options,
 verify Settings → Server address, and sign in. Setting `ADMIN_EMAILS` is
 required for an administrator; there is no default administrator bypass.
 
+## Author's local instance verified on 2026-10-18
+
+The local Chrome pilot uses Google Cloud project **Signalpost**
+(`signalpost-sonrisa-20261018`), created without enabling billing. Its
+**Signalpost Local** Web application OAuth client redirects to exactly
+`http://localhost:3000/api/auth/callback/google`.
+
+The installed and pinned unpacked extension ID is
+`aeclmacelapbhgjembgbamdcnnajpfgl`, loaded from the canonical
+`src/extension/build/chrome-mv3-prod` directory. This ID is installation
+specific; obtain the actual ID again on another machine or installation.
+The local environment file is ignored and mode `0600`; the downloaded
+credential JSON is also private and ignored. Neither is a handover artifact
+or committed source. The owner's administrator access was explicitly
+approved and verified through the live Administration view.
+
+Real sign-in and feed import passed. See the
+[live acceptance record](../process/2026-10-18-live-acceptance.md).
+No destinations or deliveries were configured in that check, so transport
+setup and actual inbox/channel acceptance still remain below.
+
 ## Mail and Slack
 
 The application invokes sendmail with argv and stdin, without a shell.

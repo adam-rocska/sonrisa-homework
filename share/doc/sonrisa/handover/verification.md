@@ -1,7 +1,9 @@
 # Verification and acceptance boundary
 
 Verified locally on 2026-10-18, macOS arm64, Node 24.13.0,
-pnpm 10.28.2. Tests use fictional or isolated temporary data.
+pnpm 10.28.2. Automated tests use fictional or isolated temporary data.
+The separately recorded native Chrome acceptance used the real local
+installation and Google account, with the owner completing consent.
 
 ## Automated results
 
@@ -10,7 +12,7 @@ pnpm 10.28.2. Tests use fictional or isolated temporary data.
 | `pnpm typecheck` | PASS | Strict TypeScript across all packages and process probes |
 | `pnpm lint` | PASS | ESLint, no explicit any and consistent type imports |
 | `pnpm format:check` | PASS | Reproducible explicit formatting |
-| `pnpm test` | **153 passed** | Core 54, server 48, extension 51; 22 test files |
+| Unit suites | **156 passed in aggregate** | Core 54, server 48 unchanged; extension 54 rerun after the live-sync fix; 23 test files |
 | `pnpm build` | PASS | Server/contracts/core type validation; Plasmo Chrome MV3 bundle |
 | `pnpm test:resilience` | PASS | Actual SIGKILL during a leased delivery; durable retry after restart; no replay on another restart |
 | `pnpm test:http` | PASS | Separate actual server process, health, auth rejection, body/batch limits, 100 concurrent requests, graceful SIGTERM |
@@ -35,14 +37,16 @@ clock jump across the lease boundary, not a real mail service.
 Tests instantiate Better Auth 1.7.10 and its SQLite adapter, migrate the
 schema, create a local test-only session, authenticate a bearer request,
 and verify sign-out revocation. No fake-user bypass exists in the
-production server. The Google round trip is separate and remains unverified.
+production server. The real Google round trip was subsequently verified
+through the installed Chrome extension, as recorded below.
 
-## Browser inspection
+## Earlier fixture browser inspection
 
 The actual compiled Options bundle was rendered in the in-app browser,
 with an **unshipped**, visibly labeled local fixture replacing Chrome APIs
 and tRPC responses. It is a UI test, not a claim that a Chrome extension
-was installed or that real authentication/delivery completed.
+was installed or that real authentication/delivery completed during that
+fixture inspection. The later native Chrome check is separate below.
 
 Observed and exercised:
 
@@ -66,21 +70,45 @@ current page. No alert setting was changed. Signed-out variants, a zero-row
 empty marker and future Google DOM changes were not assumed verified.
 The extractor refuses uncertain destructive snapshots.
 
+## Native Chrome acceptance on 2026-10-18
+
+The unpacked canonical build was installed and pinned in actual Chrome.
+Google Web OAuth was configured for the local server; the owner personally
+completed Google consent. The server health endpoint reported configured
+authentication, and the extension displayed the signed-in user and the
+Administration view. Hungarian was selected and persisted. In native
+Chrome, Cmd+K opened the localized Commands dialog; Escape closed it and
+returned focus to the content. Reloading Options with Cmd+R retained the
+signed-in account, admin navigation, Hungarian preference, both imported
+feeds and their latest polling timestamps.
+
+The toolbar opened Google Alerts from Options. Page-load automatic sync
+imported two RSS alerts and skipped one email-only alert. The already-open
+Options page updated without a reload after the live-sync fix. A manual
+toolbar sync at 21:47:05 Europe/Budapest (19:47:05 UTC) retained the same two
+feeds. Read-only SQLite inspection independently confirmed one verified
+user, one session, one catalog and two active feeds, both baselined without
+errors. There were zero destinations and zero deliveries.
+
+See [the live acceptance record](../process/2026-10-18-live-acceptance.md)
+for configuration identifiers, observations and explicit limits. No client
+secret, session token, account email or personal feed URL is included there.
+
 ## Remaining live acceptance work
 
-These require operator-supplied configuration and explicit target choices:
-
-1. Load the packaged extension in actual Chrome and set its ID on the server.
-2. Configure Google Web OAuth and complete real login/logout.
-3. Test real toolbar click/manual sync and mutation-driven sync on Google
-   Alerts, including browser host permissions and native notifications.
-4. Configure the local MTA and a Slack webhook, route a feed, await a new
+1. Complete live logout and a new login; exercise a separate non-admin
+   account. Unit tests cover revocation and authorization, but these live
+   paths have not yet been exercised.
+2. Deliberately edit an alert through Google's UI and observe mutation-driven
+   sync. Page-load automatic sync and manual toolbar sync passed; the
+   deliberate-edit path and native OS notification visibility remain
+   unverified.
+3. Configure the local MTA and a Slack webhook, route a feed, await a new
    item after baseline, and independently confirm inbox/channel receipt.
-5. Exercise the chosen administrator account and a non-admin account.
 
-The handover is complete as a guide to the implemented flow, with these
-external checks explicitly outstanding. No claim of live delivery, public
-deployment, store approval, Safari support or mobile support is made.
+The handover documents the implemented flow and the completed local
+acceptance. It does not claim final delivery acceptance, real email/Slack
+receipt, public deployment, store approval, Safari support or mobile support.
 
 ## Dependency status
 
@@ -111,8 +139,9 @@ Browser inspection caught two wrapping issues, corrected before handover:
 keep status timestamps together, and keep each keyboard chord with its own
 label in a semantic list. The compiled manifest includes both native
 `_locales/en` and `_locales/hu` catalogues. Actual Chrome-native notification
-rendering and a real Google OAuth round trip remain in the live acceptance
-list above; the unit tests cover their localization boundaries.
+rendering remains in the live acceptance list above. The subsequent real
+Google OAuth round trip passed; the unit tests also cover the localization
+boundaries of both flows.
 
 See [localization and adding languages](localization.md), the
 [Hungarian preview](signalpost-hu.png) and [RTL preview](signalpost-hu-rtl.png).

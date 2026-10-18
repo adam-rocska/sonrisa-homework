@@ -1,7 +1,8 @@
 # Google Alerts and Signalpost: end-user guide
 
 This pilot runs in Chrome/Chromium on a desktop. Your administrator must
-first configure the server, Google sign-in and mail transport. Signalpost
+first configure the server and Google sign-in; email delivery additionally
+requires a working mail transport. Signalpost
 has two places you use: Google's existing Alerts page and the extension's
 own dashboard. The Google login and the Signalpost login are separate.
 
@@ -61,10 +62,14 @@ Alerts left on Google's email delivery are skipped during import.
 
 1. Keep Google Alerts open and let its list finish loading. If Google shows
    a control for displaying all alerts, expand the complete list first.
+   If this tab was already open when you installed or reloaded the extension,
+   reload Google Alerts once so its content script is available.
 2. Press the Signalpost **toolbar icon**. When you are already on the
    Alerts page, it reads the RSS links and queries and replaces your server
    catalog with that complete snapshot. A native notification reports the
-   result. The icon does not open a popup dashboard.
+   result. The icon does not open a popup dashboard. An already-open
+   Signalpost dashboard updates its feed list when sync succeeds, preserving
+   unrelated form fields you have not saved.
 3. Open Signalpost Options → **Destinations**. Add a named email address or
    Slack incoming webhook. Your administrator must have configured email;
    Slack requires a webhook for a channel you control.
@@ -131,8 +136,15 @@ acquire it by opening a different UI section.
 
 ## Validation note
 
-The steps and UI labels were checked against the implemented dashboard
-and the observed Google Alerts DOM. The real Chrome installation, OAuth
-round trip and notification receipt still require the operator acceptance
-steps in [verification](verification.md). No Google alert was modified
-during documentation preparation.
+On 2026-10-18 the extension was installed and pinned in actual Chrome;
+the owner completed real Google sign-in. The signed-in dashboard and admin
+view, toolbar navigation to Google Alerts, page-load automatic sync, manual
+sync and live dashboard refresh were checked. Two RSS alerts were imported;
+one email-only alert was skipped. Cmd+K and Escape opened/closed Commands
+with focus returning to the content. Reloading Options retained the signed-in
+state, admin navigation, Hungarian selection and both feeds.
+
+No Google alert was deliberately modified, and no email or Slack receipt
+was verified. Logout/relogin, a non-admin account, edit-triggered sync and
+native OS notification visibility remain in the operator acceptance list
+in [verification](verification.md).
