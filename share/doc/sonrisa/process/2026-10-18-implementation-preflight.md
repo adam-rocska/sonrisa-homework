@@ -1,6 +1,6 @@
 # Implementation preflight
 
-Status: specification accepted; framework/browser choice pending.
+Status: specification accepted; Plasmo and Chrome/Chromium confirmed.
 Date: 2026-10-18.
 
 ## Verified live DOM
@@ -106,3 +106,12 @@ Supporting primary documentation:
 - https://better-auth.com/docs/plugins/one-time-token
 - https://www.postfix.org/sendmail.1.html
 - https://developer.chrome.com/docs/extensions/develop/concepts/storage-and-cookies
+
+## Owner decision
+
+The owner explicitly chose Plasmo and Chrome/Chromium first; Safari is
+a later target. WXT was considered and rejected for this implementation.
+
+Dependency check rejected jsdom 30 because it requires a newer Node 24
+patch release than the installed 24.13.0. Pin jsdom 26.1.0 for test DOMs
+instead of modifying the user's Node installation.
