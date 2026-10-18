@@ -34,12 +34,26 @@ describe("HTTP authentication boundary", () => {
     const app = createApp({ config: readConfig({}), auth: fakeAuth(true), store });
     const result = await app.request("/trpc/catalog.replace", { method: "POST", headers: { "Content-Type": "application/json" }, body: "x".repeat(1_048_577) });
     expect(result.status).toBe(413);
+    expect(result.headers.get("Connection")).toBe("close");
     expect(store.replaceCatalog).not.toHaveBeenCalled();
   });
   it("does not accept malformed or missing PKCE exchange payloads", async () => {
     const app = createApp({ config: readConfig({}), auth: fakeAuth(true), store: fakeStore() });
     expect((await app.request("/auth/exchange", { method: "POST", body: "not json" })).status).toBe(400);
     expect((await app.request("/auth/exchange", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: "code", codeVerifier: "short", redirectUri: "https://attacker.example" }) })).status).toBe(400);
+  });
+  it("bounds tRPC batch work and rejects oversize batches before touching the store", async () => {
+    const store = fakeStore();
+    const app = createApp({ config: readConfig({}), auth: fakeAuth(true), store });
+    const tooMany = Array.from({ length: 21 }, () => "catalog.get").join(",");
+    const rejected = await app.request(`/trpc/${tooMany}?batch=1`, { headers: { "Content-Type": "application/json" } });
+    expect(rejected.status).toBe(400);
+    expect(await rejected.text()).toContain("Batch call exceeds maximum size");
+    expect(store.getCatalog).not.toHaveBeenCalled();
+    const allowed = Array.from({ length: 20 }, () => "me").join(",");
+    const response = await app.request(`/trpc/${allowed}?batch=1`, { headers: { "Content-Type": "application/json" } });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toHaveLength(20);
   });
   it("exchanges only a verifier-bound one-use code and revalidates the session", async () => {
     const config = readConfig({ EXTENSION_IDS: "a".repeat(32) });

@@ -40,7 +40,12 @@ export function createApp({ config, auth, store, handoffs = new HandoffBroker(co
     context.header("X-Frame-Options", "DENY");
     await next();
   });
-  app.use("*", bodyLimit({ maxSize: 1_048_576, onError: (context) => context.json({ error: "Request body is too large." }, 413) }));
+  app.use("*", bodyLimit({ maxSize: 1_048_576, onError: (context) => {
+    // A rejected unread body cannot safely share its HTTP/1 keepalive socket
+    // with a later request. Tell clients before Node disposes of the stream.
+    context.header("Connection", "close");
+    return context.json({ error: "Request body is too large." }, 413);
+  } }));
   app.use("*", cors({
     origin: (origin) => config.trustedOrigins.includes(origin) ? origin : undefined,
     credentials: true,
@@ -116,6 +121,7 @@ export function createApp({ config, auth, store, handoffs = new HandoffBroker(co
     if (origin !== undefined && !config.trustedOrigins.includes(origin)) return context.json({ error: "Origin is not allowed." }, 403);
     return fetchRequestHandler({
       endpoint: "/trpc",
+      maxBatchSize: 20,
       req: context.req.raw,
       router: appRouter,
       createContext: async () => ({ principal: principalFromSession(await auth.getSession(context.req.raw.headers), config.adminEmails), store }),
