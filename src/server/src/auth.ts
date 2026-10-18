@@ -1,27 +1,39 @@
-import { mkdirSync } from "node:fs";
-import { join } from "node:path";
-import Database from "better-sqlite3";
-import { betterAuth, type BetterAuthOptions } from "better-auth";
-import { getMigrations } from "better-auth/db/migration";
-import { bearer } from "better-auth/plugins";
-import type { ServerConfig } from "./config.js";
-import type { AuthBoundary } from "./identity.js";
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import Database from 'better-sqlite3';
+import { betterAuth, type BetterAuthOptions } from 'better-auth';
+import { getMigrations } from 'better-auth/db/migration';
+import { bearer } from 'better-auth/plugins';
+import type { ServerConfig } from './config.js';
+import type { AuthBoundary } from './identity.js';
 
 export async function createGoogleAuth(config: ServerConfig): Promise<AuthBoundary> {
-  if (config.authSecret === undefined || config.googleClientId === undefined || config.googleClientSecret === undefined || config.extensionIds.length === 0) {
+  if (
+    config.authSecret === undefined ||
+    config.googleClientId === undefined ||
+    config.googleClientSecret === undefined ||
+    config.extensionIds.length === 0
+  ) {
     return {
       configured: false,
-      handler: async () => Response.json({ error: "Authentication is not configured.", requirements: config.authConfigurationIssues }, { status: 503 }),
+      handler: async () =>
+        Response.json(
+          {
+            error: 'Authentication is not configured.',
+            requirements: config.authConfigurationIssues,
+          },
+          { status: 503 },
+        ),
       getSession: async () => null,
       close: () => undefined,
     };
   }
   mkdirSync(config.dataDirectory, { recursive: true, mode: 0o700 });
-  const database = new Database(join(config.dataDirectory, "auth.sqlite"));
-  database.pragma("journal_mode = WAL");
-  database.pragma("busy_timeout = 5000");
+  const database = new Database(join(config.dataDirectory, 'auth.sqlite'));
+  database.pragma('journal_mode = WAL');
+  database.pragma('busy_timeout = 5000');
   const options = {
-    appName: "Signalpost",
+    appName: 'Signalpost',
     baseURL: config.baseUrl,
     secret: config.authSecret,
     database,
@@ -30,8 +42,8 @@ export async function createGoogleAuth(config: ServerConfig): Promise<AuthBounda
       google: {
         clientId: config.googleClientId,
         clientSecret: config.googleClientSecret,
-        scope: ["openid", "email", "profile"],
-        prompt: "select_account",
+        scope: ['openid', 'email', 'profile'],
+        prompt: 'select_account',
       },
     },
     session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
@@ -53,10 +65,17 @@ export async function createGoogleAuth(config: ServerConfig): Promise<AuthBounda
     handler: async (request) => auth.handler(request),
     getSession: async (headers) => {
       const session = await auth.api.getSession({ headers });
-      return session === null ? null : {
-        session: { token: session.session.token, expiresAt: session.session.expiresAt },
-        user: { id: session.user.id, email: session.user.email, emailVerified: session.user.emailVerified, name: session.user.name },
-      };
+      return session === null
+        ? null
+        : {
+            session: { token: session.session.token, expiresAt: session.session.expiresAt },
+            user: {
+              id: session.user.id,
+              email: session.user.email,
+              emailVerified: session.user.emailVerified,
+              name: session.user.name,
+            },
+          };
     },
     close: () => database.close(),
   };

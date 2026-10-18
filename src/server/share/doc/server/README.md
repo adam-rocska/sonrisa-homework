@@ -89,6 +89,10 @@ Live Google OAuth, real Slack receipt and end-to-end mailbox delivery require
 deployment configuration and an explicit live test. Local test success does
 not claim those workflows are already configured or verified.
 
+The optional [bounded HTTP process probe](http-smoke.md) runs the actual server
+in isolation, checks limits and 100 concurrent requests, then verifies SIGTERM.
+The HTTP boundary caps bodies at 1 MiB and tRPC batches at 20 procedures.
+
 ## Primary references
 
 - [Better Auth Google provider](https://better-auth.com/docs/authentication/google)

@@ -1,12 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "sbin/**/*.ts",
-    "share/test/**/*.ts"
-  ]
+  "include": ["sbin/**/*.ts", "share/test/**/*.ts"]
 }

@@ -1,4 +1,4 @@
-import type { AdminOverview, Catalog, Delivery, Destination, Feed } from "@signalpost/core";
+import type { AdminOverview, Catalog, Delivery, Destination, Feed } from '@signalpost/core';
 
 export function feedToDto(feed: Feed) {
   return {
@@ -18,7 +18,11 @@ export function feedToDto(feed: Feed) {
 }
 
 export function catalogToDto(catalog: Catalog) {
-  return { sourceId: catalog.sourceId, lastSyncedAt: catalog.lastSyncedAt?.toISOString() ?? null, feeds: catalog.feeds.map(feedToDto) };
+  return {
+    sourceId: catalog.sourceId,
+    lastSyncedAt: catalog.lastSyncedAt?.toISOString() ?? null,
+    feeds: catalog.feeds.map(feedToDto),
+  };
 }
 
 export function destinationToDto(destination: Destination) {
