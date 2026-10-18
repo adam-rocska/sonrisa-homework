@@ -1,0 +1,27 @@
+# Deny by default: local credentials, SQLite and history never enter build context.
+**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!.npmrc
+!.pnpmfile.cjs
+!tsconfig.base.json
+!src/
+!src/server/
+!src/server/package.json
+!src/server/tsconfig.json
+!src/server/Dockerfile
+!src/server/src/
+!src/server/src/**
+!src/server/sbin/
+!src/server/sbin/**
+!src/core/
+!src/core/package.json
+!src/core/tsconfig.json
+!src/core/src/
+!src/core/src/**
+!src/contracts/
+!src/contracts/package.json
+!src/contracts/tsconfig.json
+!src/contracts/src/
+!src/contracts/src/**
