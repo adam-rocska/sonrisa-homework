@@ -15,6 +15,9 @@ and RTL-ready layout; additional languages use typed translation catalogues.
 
 Start with the [reviewer guide](share/doc/sonrisa/handover/reviewer-summary.md)
 for the scoped result, key corrections and evidence boundaries.
+A [one-page Hungarian summary](share/doc/sonrisa/handover/summary-hu.pdf)
+describes the owner's reasoning and direction of the AI; its
+[editable source](share/doc/sonrisa/handover/summary-hu.md) is included.
 
 The assignment evaluates the reasoning and validation process. Continue with
 [the original brief](share/doc/sonrisa/sources/assignment-extracted.txt),
@@ -95,20 +98,20 @@ a green local probe does not establish them.
 FHS directory roles are applied to this project prefix, recursively. This
 is a project organization convention, not an operating-system root image.
 
-| Path | Role |
-| --- | --- |
-| `src/contracts/src/` | Transport schemas and DTO types |
-| `src/core/src/` | Server domain, SQLite adapter, feed engine, channels |
-| `src/server/src/` | Authentication, authorization, tRPC and HTTP entry |
-| `src/extension/src/` | Extension domain, browser adapters and React UI |
-| `src/infrastructure/` | Pulumi intent model, Docker/Kubernetes adapters and deployment tests |
-| `etc/` | Configuration examples; local secrets are ignored |
-| `bin/`, `sbin/` | Developer and administrator utilities |
-| `lib/`, `include/` | Library/header roles, reserved where unused |
-| `share/doc/sonrisa/` | Durable specifications, decisions and handover |
-| `share/test/` | Isolated process-probe worker |
-| `var/lib/` | Runtime SQLite databases; ignored |
-| `var/log/`, `var/cache/`, `var/tmp/`, `run/`, `tmp/` | Ignored runtime state |
+| Path                                                 | Role                                                                 |
+| ---------------------------------------------------- | -------------------------------------------------------------------- |
+| `src/contracts/src/`                                 | Transport schemas and DTO types                                      |
+| `src/core/src/`                                      | Server domain, SQLite adapter, feed engine, channels                 |
+| `src/server/src/`                                    | Authentication, authorization, tRPC and HTTP entry                   |
+| `src/extension/src/`                                 | Extension domain, browser adapters and React UI                      |
+| `src/infrastructure/`                                | Pulumi intent model, Docker/Kubernetes adapters and deployment tests |
+| `etc/`                                               | Configuration examples; local secrets are ignored                    |
+| `bin/`, `sbin/`                                      | Developer and administrator utilities                                |
+| `lib/`, `include/`                                   | Library/header roles, reserved where unused                          |
+| `share/doc/sonrisa/`                                 | Durable specifications, decisions and handover                       |
+| `share/test/`                                        | Isolated process-probe worker                                        |
+| `var/lib/`                                           | Runtime SQLite databases; ignored                                    |
+| `var/log/`, `var/cache/`, `var/tmp/`, `run/`, `tmp/` | Ignored runtime state                                                |
 
 Each subproject follows these roles for the directories it uses. Plasmo
 owns its generated `.plasmo/` and `build/` directories; both are ignored.
