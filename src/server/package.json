@@ -1,0 +1,29 @@
+{
+  "name": "@signalpost/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "build": "tsc --noEmit",
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "9.6.0"
+  },
+  "exports": {
+    "./router": "./src/router.ts"
+  },
+  "dependencies": {
+    "@signalpost/contracts": "workspace:*",
+    "@signalpost/core": "workspace:*",
+    "@trpc/server": "11.19.0",
+    "@hono/node-server": "2.1.5",
+    "hono": "4.13.13",
+    "better-auth": "1.7.10",
+    "better-sqlite3": "13.0.3",
+    "zod": "4.6.7"
+  }
+}

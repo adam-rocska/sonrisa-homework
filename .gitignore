@@ -14,3 +14,10 @@
 !**/.gitkeep
 
 # Preserve plans, prompts and working evidence in share/doc/.
+
+# Dependencies and generated application bundles.
+**/node_modules/
+**/.plasmo/
+**/build/
+**/coverage/
+*.tsbuildinfo

@@ -1,0 +1,63 @@
+{
+  "name": "@signalpost/extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "build": "plasmo build --target=chrome-mv3",
+    "dev": "plasmo dev --target=chrome-mv3",
+    "package": "plasmo package --target=chrome-mv3"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.1.32",
+    "@types/react": "18.3.27",
+    "@types/react-dom": "18.3.7",
+    "jsdom": "30.1.3"
+  },
+  "displayName": "Signalpost",
+  "description": "Google Alerts, delivered where you work.",
+  "dependencies": {
+    "@signalpost/contracts": "workspace:*",
+    "@signalpost/server": "workspace:*",
+    "@trpc/client": "11.19.0",
+    "plasmo": "0.90.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "4.6.7"
+  },
+  "manifest": {
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting",
+      "notifications",
+      "identity"
+    ],
+    "host_permissions": [
+      "https://www.google.com/alerts*",
+      "http://localhost:3000/*"
+    ],
+    "optional_host_permissions": [
+      "https://*/*",
+      "http://127.0.0.1/*"
+    ],
+    "commands": {
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+Y",
+          "mac": "Command+Shift+Y"
+        },
+        "description": "Synchronize Google Alerts"
+      },
+      "open-dashboard": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+U",
+          "mac": "Command+Shift+U"
+        },
+        "description": "Open Signalpost dashboard"
+      }
+    }
+  }
+}

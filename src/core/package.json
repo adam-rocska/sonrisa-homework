@@ -1,0 +1,21 @@
+{
+  "name": "@signalpost/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "9.6.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3",
+    "fast-xml-parser": "5.11.2"
+  }
+}
