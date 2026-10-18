@@ -117,6 +117,6 @@ separate connector-assisted Gmail receipt, are recorded in the
 
 Final review caught a working personal RSS capability URL inside an
 archived implementation prompt. The example is now synthetic. Historical
-Git copies also need the same substitution before reviewer access; the
-release record reports the final disposition. No application behavior
+Git copies received the same substitution with explicit owner approval;
+the release record reports the verified disposition. No application behavior
 changed for this correction.

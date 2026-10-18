@@ -35,3 +35,12 @@ subsequently and their links checked separately.
 This task did not send email, grant repository access, modify runtime
 credentials or create commits. The parent owns final verification and
 repository commits.
+
+
+A bounded attempt to recover the older delegation text from the exact
+local session record found 64 outgoing collaboration calls (10 spawn,
+16 follow-up and 38 message calls). Their task-message fields were encrypted
+at rest. No keys, ciphertext, system instructions or hidden reasoning were
+exported. This limitation is retained rather than inventing verbatim task
+prompts. The owner's task requests and evolving specification remain in
+the numbered prompt archive.

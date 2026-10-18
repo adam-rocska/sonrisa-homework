@@ -41,8 +41,8 @@ review compared the original assignment with the guides and process record.
 - Fixed setup examples to preserve existing local configuration (`cp -n`).
 - Added direct reviewer navigation and all three process-probe commands.
 - Found a working personal Google Alerts URL in prompt 009. Replaced it
-  with a synthetic selector example; Git history sanitization is tracked
-  separately before granting reviewer access.
+  with a synthetic selector example; Git history sanitization completed
+  with explicit owner approval, as recorded below.
 - Credential-pattern inspection of 191 tracked files and 246 historical
   blobs found this RSS URL only; no OAuth secret, access token, actual Slack
   webhook, GitHub token or private key was found by those checks.
@@ -66,3 +66,37 @@ provides a submission address but no reviewer GitHub identity. A clean
 source archive can be reviewed immediately; repository access requires an
 identity supplied by the recipient. No employer email has been sent by
 this finalization step.
+
+
+## Final history and package disposition
+
+The owner explicitly approved replacing the remote main history to remove
+the working personal RSS capability URL. Before the push, an isolated
+rewrite was verified against all 42 original commits:
+
+- All commit messages, authors and timestamps were preserved.
+- The first ten commits were byte-identical. Later commits were signed
+  again; their identities changed with the corrected trees/parents.
+- Exactly one prompt file changed in 29 historical snapshots, and only the
+  private feed identifiers were replaced with synthetic values.
+- The latest tree remained byte-identical. All 256 reachable blobs in the
+  sanitized history were checked for the original URL; none contained it.
+- A private local backup was retained outside the distribution artifacts.
+
+The approved push used `--force-with-lease` with the exact previously
+observed remote main ID. Read-back confirmed that local and GitHub main
+matched. This verifies reachable main history, not deletion of every
+unreachable object in GitHub's internal storage or revocation of the feed.
+
+The distribution includes a tracked-files-only source ZIP, a Chrome ZIP
+with 14 files (including EN/HU locale catalogues), and a Git bundle carrying
+only main and HEAD. Restoring the bundle with plain `git clone` reproduced
+the clean working tree and milestone history. The first trial exposed a
+missing HEAD advertisement; including HEAD corrected the bundle before
+handover. No ignored runtime state, OAuth secret, database or dependencies
+are packaged. Artifact hashes are distributed alongside the final files.
+
+A final documentation commit records this outcome. No application source
+changed after the complete test run described above. The submission email
+remains an unsent local draft addressed to `job@sonrisa.hu`. Separate Gmail
+searches found no reviewer GitHub identity in the relevant correspondence.
