@@ -19,6 +19,25 @@ The app session is held in trusted extension session storage and disappears
 when the browser closes. Server polling and delivery continue even while
 the browser is closed. Sign in again to manage or synchronize your catalog.
 
+## Language and layout
+
+Open **Settings → Language and layout** (**Beállítások → Nyelv és
+elrendezés**). Choose English, Magyar, or **Use browser language**. The
+choice is saved immediately for this browser, independently of the server
+connection. Unsupported browser languages fall back to English.
+
+**Text direction** normally follows the selected language. Both included
+translations use left-to-right text. Choose **Right to left** to use or
+inspect the mirrored layout; this does not translate English or Hungarian
+into another language. Names and mixed-direction content are isolated so
+they do not reorder surrounding labels. URLs, email addresses and keyboard
+shortcuts retain their normal reading direction.
+
+Changing Signalpost's language does not change Google's UI, your search
+queries, article content or notification destinations. The English labels
+used in this guide have corresponding Hungarian labels in the app. See
+[localization](localization.md) for scope and adding another translation.
+
 ## Create an alert and select RSS in Google
 
 1. Open [Google Alerts](https://www.google.com/alerts). Pressing the

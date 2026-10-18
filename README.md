@@ -8,6 +8,8 @@ extension also contains the administrator view.
 **Stack:** Plasmo, React, strict TypeScript, tRPC, Better Auth OSS, SQLite,
 pnpm. One repository; no paid SDK, authentication service, queue, or broker.
 Chrome/Chromium is the first target. Safari and mobile are outside this pilot.
+The GUI includes English and Hungarian, browser-local language selection,
+and RTL-ready layout; additional languages use typed translation catalogues.
 
 ## Run locally
 
@@ -44,6 +46,7 @@ configuration and operational limits are in the handover documents below.
 
 - [Operator guide](share/doc/sonrisa/handover/operator-guide.md)
 - [Google Alerts and extension guide](share/doc/sonrisa/handover/user-guide.md)
+- [Localization and adding languages](share/doc/sonrisa/handover/localization.md)
 - [Architecture and tradeoffs](share/doc/sonrisa/handover/architecture.md)
 - [Verification evidence](share/doc/sonrisa/handover/verification.md)
 - [Original assignment and email](share/doc/sonrisa/sources/)

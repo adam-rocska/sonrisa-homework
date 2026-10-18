@@ -10,7 +10,7 @@ pnpm 10.28.2. Tests use fictional or isolated temporary data.
 | `pnpm typecheck` | PASS | Strict TypeScript across all packages and process probes |
 | `pnpm lint` | PASS | ESLint, no explicit any and consistent type imports |
 | `pnpm format:check` | PASS | Reproducible explicit formatting |
-| `pnpm test` | **126 passed** | Core 54, server 42, extension 30; 17 test files |
+| `pnpm test` | **153 passed** | Core 54, server 48, extension 51; 22 test files |
 | `pnpm build` | PASS | Server/contracts/core type validation; Plasmo Chrome MV3 bundle |
 | `pnpm test:resilience` | PASS | Actual SIGKILL during a leased delivery; durable retry after restart; no replay on another restart |
 | `pnpm test:http` | PASS | Separate actual server process, health, auth rejection, body/batch limits, 100 concurrent requests, graceful SIGTERM |
@@ -89,3 +89,30 @@ saved audit outputs beside it. The production and complete build graphs are
 reported separately. Retained build-tool advisories are not hidden by a
 successful compiler/test result. Any later dependency update requires a
 fresh build and browser runtime check, not only an install command.
+
+## Localization follow-up
+
+The EN/HU localization follow-up passed the full `pnpm check` and Chrome
+packaging. The final timestamp/shortcut wrapping adjustment then passed
+extension typechecking, targeted lint, formatting and a rebuilt package.
+No dependency was added or upgraded for localization.
+
+The actual compiled bundle was checked again in the labeled local UI
+fixture. Observed: automatic Hungarian selection, explicit English switch,
+translated cached sync counts and dates, English persisting across reload,
+Hungarian with explicit RTL persisting across reload, Cmd+K command dialog,
+and saving a fictional Arabic/Latin destination name. At the available
+663px pane width, document scroll width equals client width in both LTR
+and RTL. The final preview is Hungarian with automatic direction.
+The unshipped fixture persists only its language/layout preferences in
+browser local storage; its API/account/delivery data remain fictional.
+
+Browser inspection caught two wrapping issues, corrected before handover:
+keep status timestamps together, and keep each keyboard chord with its own
+label in a semantic list. The compiled manifest includes both native
+`_locales/en` and `_locales/hu` catalogues. Actual Chrome-native notification
+rendering and a real Google OAuth round trip remain in the live acceptance
+list above; the unit tests cover their localization boundaries.
+
+See [localization and adding languages](localization.md), the
+[Hungarian preview](signalpost-hu.png) and [RTL preview](signalpost-hu-rtl.png).
