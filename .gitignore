@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Recursive FHS runtime paths; preserve directory placeholders.
+**/var/cache/**
+**/var/lib/**
+**/var/log/**
+**/var/tmp/**
+**/tmp/**
+**/run/**
+!**/.gitkeep
+
+# Preserve plans, prompts and working evidence in share/doc/.
