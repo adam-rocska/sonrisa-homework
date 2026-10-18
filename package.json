@@ -27,7 +27,6 @@
     "typescript-eslint": "8.71.2",
     "typescript": "5.9.3",
     "vitest": "4.1.11",
-    "tsx": "4.23.15",
     "@types/node": "24.10.1",
     "prettier": "3.9.10"
   },
@@ -43,7 +42,13 @@
     "overrides": {
       "plasmo>fflate": "0.8.3",
       "lmdb>msgpackr": "1.11.5",
-      "@plasmohq/parcel-transformer-inline-css>browserslist": "4.28.7"
+      "@plasmohq/parcel-transformer-inline-css>browserslist": "4.28.7",
+      "better-auth@1.7.10>svelte": "-",
+      "better-auth@1.7.10>vue": "-",
+      "better-auth@1.7.10>vitest": "-"
     }
+  },
+  "dependencies": {
+    "tsx": "4.23.15"
   }
 }

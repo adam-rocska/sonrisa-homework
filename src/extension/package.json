@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "build": "plasmo build --target=chrome-mv3",
     "dev": "plasmo dev --target=chrome-mv3",
     "package": "plasmo package --target=chrome-mv3"
@@ -60,6 +60,6 @@
         "description": "Open Signalpost dashboard"
       }
     },
-    "minimum_chrome_version": "120"
+    "minimum_chrome_version": "124"
   }
 }
