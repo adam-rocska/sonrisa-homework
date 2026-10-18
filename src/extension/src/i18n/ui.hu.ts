@@ -1,0 +1,141 @@
+import type en from './ui.en';
+import type { Message } from './types';
+
+const hu = {
+  'ui.section.feeds': 'Hírfolyamaim',
+  'ui.section.destinations': 'Célállomások',
+  'ui.section.activity': 'Kézbesítési napló',
+  'ui.section.admin': 'Adminisztráció',
+  'ui.section.settings': 'Beállítások',
+  'ui.skip': 'Ugrás a tartalomhoz',
+  'ui.tagline': 'Saját értesítések. Saját csatornák.',
+  'ui.signedOut': 'Nincs bejelentkezve',
+  'ui.commands': 'Parancsok',
+  'ui.sync': 'Google Alerts szinkronizálása',
+  'ui.desktop': 'Asztali böngészőre tervezve.',
+  'ui.openAlerts': 'Google Alerts megnyitása',
+  'ui.feed.watching': 'Figyelés aktív',
+  'ui.feed.paused': 'Szüneteltetve',
+  'ui.feed.checked': 'Utoljára ellenőrizve',
+  'ui.feed.nextCheck': 'Következő ellenőrzés',
+  'ui.feed.watch': 'Hírfolyam figyelése',
+  'ui.feed.sendTo': 'Új elemek küldése ide',
+  'ui.feed.addDestination': 'Előbb adj hozzá egy email- vagy Slack-célállomást.',
+  'ui.feed.save': 'Továbbítás mentése',
+  'ui.feed.intro':
+    'A témákat a Google Alertsben kezelheted. A Signalpost importálja a teljes RSS-listát, és az új elemeket a kiválasztott célállomásokra küldi.',
+  'ui.feed.count': { one: '{count} hírfolyam', other: '{count} hírfolyam' },
+  'ui.feed.lastSynced': 'Utolsó szinkronizálás',
+  'ui.feed.start': 'Válassz egy követésre érdemes témát',
+  'ui.feed.stepCreate': 'Nyisd meg a Google Alertset, és hozz létre egy értesítést.',
+  'ui.feed.stepRss': 'A Kézbesítés beállításnál válaszd az RSS-hírcsatornát.',
+  'ui.feed.stepSync': 'A szinkronizáláshoz nyomd meg a Signalpost eszköztárgombját.',
+  'ui.feed.stepDestination': 'Itt adj hozzá egy célállomást, majd jelöld ki a hírfolyamnál.',
+  'ui.feed.baseline':
+    'A csak emailben kézbesített Google-értesítéseket nem importáljuk. Az első lekérés rögzíti a kiinduló állapotot; a korábbi elemeket nem küldjük el.',
+  'ui.channel.email': 'Email',
+  'ui.channel.slack': 'Slack',
+  'ui.delivery.feed': 'Hírfolyam',
+  'ui.delivery.destination': 'Célállomás',
+  'ui.delivery.empty': 'Még nincs kézbesítés',
+  'ui.delivery.emptyHelp':
+    'Az új elemek akkor jelennek meg itt, ha már rögzítettük a kiinduló állapotot, és választottál célállomást.',
+  'ui.delivery.untitled': 'Cím nélküli elem',
+  'ui.delivery.removedFeed': 'Törölt vagy más felhasználóhoz tartozó hírfolyam',
+  'ui.delivery.removedDestination': 'Törölt vagy más felhasználóhoz tartozó célállomás',
+  'ui.delivery.attempts': { one: '{count} próbálkozás', other: '{count} próbálkozás' },
+  'ui.delivery.retry': 'Kézbesítés újrapróbálása',
+  'ui.delivery.pending': 'Függőben',
+  'ui.delivery.accepted': 'Átvéve',
+  'ui.delivery.failed': 'Sikertelen',
+  'ui.delivery.cancelled': 'Megszakítva',
+  'ui.delivery.intro':
+    'Az „Átvéve” azt jelenti, hogy az emailszolgáltatás vagy a Slack átvette az üzenetet. Ez nem igazolja, hogy a címzett elolvasta.',
+  'ui.delivery.refresh': 'Napló frissítése',
+  'ui.auth.connect': 'Jelentkezz be a Signalpostba',
+  'ui.auth.intro':
+    'Jelentkezz be a Google-fiókoddal, hogy együtt kezelhesd a hírfolyamokat és a célállomásokat. A Google Alertsbe és a Signalpostba külön kell bejelentkezned.',
+  'ui.auth.continue': 'Folytatás Google-fiókkal',
+  'ui.auth.localSetup': 'Helyi telepítésnél előbb add meg a szervert a Beállításokban.',
+  'ui.auth.heading': 'Google-bejelentkezés',
+  'ui.auth.signedInAs': 'Bejelentkezve mint',
+  'ui.auth.independent':
+    'Jelentkezz be a Signalpostba a Google-fiókoddal. A Google Alerts oldala ettől független bejelentkezést használ.',
+  'ui.auth.signOut': 'Kijelentkezés a Signalpostból',
+  'ui.auth.sessionHelp':
+    'A munkamenetet a bővítmény védett memóriája tárolja; a böngésző bezárásakor törlődik.',
+  'ui.auth.callback': 'Fejlesztői beállítás: OAuth-visszahívás',
+  'ui.auth.callbackHelp':
+    'Pontosan ezt a visszahívási címet engedélyezd a szerver bővítményátirányítási beállításában. A megismételhető helyi telepítéshez használj állandó bővítményazonosítót.',
+  'ui.destination.intro':
+    'Adj meg egy email-címet vagy egy Slack bejövő webhookot. A kézbesítéshez szükséges hozzáférési adatokat a szerver tárolja, az alkalmazás nem jeleníti meg őket újra.',
+  'ui.destination.edit': 'Célállomás szerkesztése',
+  'ui.destination.add': 'Célállomás hozzáadása',
+  'ui.destination.name': 'Név',
+  'ui.destination.namePlaceholder': 'Saját postaláda vagy csapathírek',
+  'ui.destination.channel': 'Csatorna',
+  'ui.destination.email': 'Email-cím',
+  'ui.destination.webhook': 'Slack bejövő webhook URL-je',
+  'ui.destination.retain': 'Hagyd üresen a jelenlegi célállomás megtartásához',
+  'ui.destination.webhookHelp':
+    'Hozz létre egy bejövő webhookot a saját Slack-munkaterületedben. Ezt az URL-t tartsd titokban.',
+  'ui.destination.enable': 'Kézbesítés engedélyezése',
+  'ui.destination.enabled': 'Engedélyezve',
+  'ui.destination.removeConfirm': 'Eltávolítod ezt: {name}? A továbbítása leáll.',
+  'ui.saveChanges': 'Módosítások mentése',
+  'ui.cancel': 'Mégse',
+  'ui.edit': 'Szerkesztés',
+  'ui.remove': 'Eltávolítás',
+  'ui.admin.intro':
+    'A teljes szerver működésének áttekintése. Az adminisztrátori jogosultságot a szerver minden kérésnél ellenőrzi.',
+  'ui.admin.users': 'Csatlakoztatott felhasználók',
+  'ui.admin.feeds': 'Hírfolyamok',
+  'ui.admin.destinations': 'Célállomások',
+  'ui.admin.refresh': 'Adminisztráció frissítése',
+  'ui.admin.recent': 'Legutóbbi kézbesítések',
+  'ui.settings.appearance': 'Nyelv és elrendezés',
+  'ui.settings.language': 'Nyelv',
+  'ui.settings.autoLanguage': 'Böngésző nyelve',
+  'ui.settings.languageHelp':
+    'Azonnal mentjük ebben a böngészőben. A nem támogatott nyelveknél angolt használunk.',
+  'ui.settings.direction': 'Szövegirány',
+  'ui.settings.autoDirection': 'A nyelv szerint',
+  'ui.settings.ltr': 'Balról jobbra',
+  'ui.settings.rtl': 'Jobbról balra',
+  'ui.settings.directionHelp':
+    'Az irány felülbírálásával kipróbálhatod a kétirányú elrendezést. Ez az elrendezést módosítja, a fordítást nem.',
+  'ui.settings.connection': 'Kapcsolat',
+  'ui.settings.server': 'Szerver címe',
+  'ui.settings.serverHelp':
+    'Távoli szerverhez HTTPS-t használj. A szerverváltás kijelentkeztet. A helyi fejlesztői cím:',
+  'ui.settings.autoSync':
+    'Automatikus szinkronizálás a Google Alerts betöltésekor vagy változásakor',
+  'ui.settings.autoSyncHelp':
+    'A kézi szinkronizálás eszköztárgombja továbbra is használható. Az automatikus szinkronizáláshoz a Google Alertsnek nyitva kell lennie; a szerver a böngésző bezárása után is kézbesít.',
+  'ui.settings.save': 'Beállítások mentése',
+  'ui.keyboard.heading': 'Billentyűzetes kezelés',
+  'ui.keyboard.sync': 'Szinkronizálás',
+  'ui.keyboard.help': 'Súgó',
+  'ui.keyboard.close': 'Bezárás',
+  'ui.keyboard.hint':
+    'A gyorsbillentyűk nem zavarják a szövegbevitelt. A Tab és a Shift+Tab minden vezérlőt elér. A böngészőszintű gyorsbillentyűk itt módosíthatók:',
+  'ui.clear.heading': 'Szinkronizált hírfolyamok törlése',
+  'ui.clear.help':
+    'Ha a Google-ben minden RSS-értesítést eltávolítottál, itt kifejezetten törölheted a listát. A Signalpost egy ismeretlen vagy még betöltődő Google-oldalt nem értelmez a hírfolyamok törlésére adott kérésként.',
+  'ui.clear.confirm':
+    'Törölni szeretném az összes szinkronizált hírfolyamot és leállítani a továbbításukat.',
+  'ui.clear.action': 'Összes szinkronizált hírfolyam törlése',
+  'ui.commands.close': 'Parancsok bezárása',
+  'ui.commands.help':
+    'Használd a Tab, Shift+Tab és Enter billentyűket. Az Escape bezárja ezt az ablakot.',
+  'ui.notice.destinationSaved': 'Célállomás mentve.',
+  'ui.notice.destinationRemoved': 'Célállomás eltávolítva.',
+  'ui.notice.settingsSaved': 'Beállítások mentve. Ha szervert váltottál, jelentkezz be újra.',
+  'ui.notice.signedIn': 'Bejelentkeztél a Signalpostba.',
+  'ui.notice.signedOut': 'Kijelentkeztél.',
+  'ui.notice.routingSaved': 'Hírfolyam továbbítása mentve.',
+  'ui.notice.retry': 'Újabb kézbesítési próbálkozás ütemezve.',
+  'ui.notice.cleared': 'A szinkronizált lista törölve. A Google Alerts beállításai nem változtak.',
+} satisfies Record<keyof typeof en, Message>;
+
+export default hu;

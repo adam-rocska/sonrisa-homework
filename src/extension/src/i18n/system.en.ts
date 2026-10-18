@@ -1,0 +1,87 @@
+import type { Message } from './types';
+
+export const en = {
+  'sync.replacing': 'Replacing your catalog with the complete Google Alerts snapshot…',
+  'sync.success': { one: '{count} RSS feed synced.', other: '{count} RSS feeds synced.' },
+  'sync.skipped': {
+    one: '{count} email-only alert was skipped.',
+    other: '{count} email-only alerts were skipped.',
+  },
+  'sync.openedNew':
+    'Google Alerts opened. Sign in, set RSS delivery, then press Signalpost to sync.',
+  'sync.opened': 'Google Alerts opened. Press Signalpost again to sync.',
+  'sync.openFirst': 'Open Google Alerts and try again.',
+  'sync.reload': 'Reload Google Alerts and try again.',
+  'sync.disabled': 'Automatic sync is disabled.',
+  'sync.appOpened': 'Signalpost opened.',
+  'sync.idle': 'No sync has run yet.',
+  'error.generic': 'The operation failed. Please try again.',
+  'error.network':
+    'The server could not be reached. Check your connection and server settings, then try again.',
+  'error.timeout': 'The request timed out. Please try again.',
+  'error.cancelled': 'The operation was cancelled. Please try again when ready.',
+  'error.identityChanged': 'Your account or server changed. Sync again from the current account.',
+  'error.sourceMismatch':
+    'This Google Alerts account differs from your connected account. Switch Google accounts before syncing.',
+  'error.alertsSignIn': 'Please sign in to Google Alerts first, then press Signalpost again.',
+  'error.noRss':
+    'No RSS links are visible, so this Google account cannot be verified. Use Settings → Clear synced feeds to explicitly empty the catalog.',
+  'error.signalpostSignIn':
+    'Sign in to Signalpost first. Its Google sign-in is separate from the Google Alerts page.',
+  'error.alertsLoading': 'Google Alerts is still loading, or its page format changed.',
+  'error.alertsIncomplete': 'The complete alerts list is not available yet.',
+  'error.showAllAlerts': 'Show all your Google Alerts before syncing the complete catalog.',
+  'error.missingQuery': 'An alert has no readable query. Nothing was replaced.',
+  'error.incompleteAlert': 'An alert is incomplete. Nothing was replaced.',
+  'error.ambiguousFeed': 'An alert has ambiguous RSS links. Nothing was replaced.',
+  'error.invalidFeed': 'Google returned an unfamiliar feed address. Nothing was replaced.',
+  'error.duplicateFeed': 'Duplicate feed links were found. Nothing was replaced.',
+  'error.multipleSources': 'Alerts from multiple Google accounts were found. Nothing was replaced.',
+  'error.createRss':
+    'Create one RSS alert first so Signalpost can identify this Google Alerts account.',
+  'error.emptyUnconfirmed':
+    'The alerts list is empty but not confirmed ready. Use Signalpost settings to explicitly clear the synced catalog.',
+  'error.serverOrigin': 'Use a server origin, without a path or credentials.',
+  'error.serverHttps': 'Use HTTPS, or HTTP for a local development server.',
+  'error.authIncomplete': 'Google sign-in was not completed. Please try again.',
+  'error.authCallback': 'The sign-in callback could not be verified. Please try again.',
+  'error.authConfiguration':
+    'Sign-in could not be completed. Check the server OAuth configuration.',
+  'error.authServerChanged':
+    'The server changed while signing in. Start sign-in again for the current server.',
+  'error.signOutServer': 'Server sign-out failed; the local session was cleared.',
+  'error.sessionExpired': 'Your Signalpost session expired. Sign in again.',
+  'error.serverPermission': 'Server access was not granted. Your settings were not changed.',
+  'error.adminRequired': 'An administrator account is required.',
+  'error.notFound': 'The requested item was not found. Refresh and try again.',
+  'error.invalidInput': 'Check the entered values and try again.',
+  'error.conflict': 'This operation conflicts with the current state. Refresh and try again.',
+  'error.server': 'The server could not complete this operation. Please try again.',
+  'error.rateLimit': 'Too many requests. Wait a moment and try again.',
+  'error.changeChannel': 'Create a new destination to change its delivery channel.',
+  'error.targetRequired': 'A target is required for a new destination.',
+  'error.feedLimit': 'At most 1000 feeds are allowed.',
+  'error.destinationLimit': 'At most 100 destinations are allowed.',
+  'error.retryState': 'Only pending or failed deliveries can be retried.',
+  'error.retryDisabled': 'Enable the feed and its destination before retrying.',
+  'error.emailAddress': 'Enter one valid email address.',
+  'error.slackWebhook': 'Enter an HTTPS hooks.slack.com/services webhook address.',
+  'error.feedNetwork': 'The feed request failed or timed out.',
+  'error.feedHttp': 'The feed request failed (HTTP {status}).',
+  'error.feedXml': 'The feed is not safe, well-formed RSS or Atom XML.',
+  'error.feedSize': 'The feed response exceeds the size limit.',
+  'error.feedEmpty': 'The feed response is empty.',
+  'error.feedItemLimit': 'The feed exceeds the 2000-item limit.',
+  'error.feedItem': 'The feed contains a malformed item or invalid article link.',
+  'error.slackNetwork': 'The Slack request failed or timed out.',
+  'error.slackHttp': 'Slack rejected the notification (HTTP {status}).',
+  'error.mailStart': 'The local mail transport could not be started.',
+  'error.mailTimeout': 'The local mail transport timed out.',
+  'error.mailRejected': 'The local mail transport rejected submission (exit {status}).',
+  'error.notificationSubject': 'The notification subject is invalid.',
+  'error.channelUnavailable': 'The notification channel is unavailable.',
+  'error.channelTarget': 'The destination does not match its notification channel.',
+  'error.notificationRejected': 'The notification could not be accepted.',
+} satisfies Record<string, Message>;
+
+export default en;
