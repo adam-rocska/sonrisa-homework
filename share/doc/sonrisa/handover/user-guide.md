@@ -144,7 +144,9 @@ one email-only alert was skipped. Cmd+K and Escape opened/closed Commands
 with focus returning to the content. Reloading Options retained the signed-in
 state, admin navigation, Hungarian selection and both feeds.
 
-No Google alert was deliberately modified, and no email or Slack receipt
-was verified. Logout/relogin, a non-admin account, edit-triggered sync and
+No Google alert was deliberately modified. Normal SMTP and real Slack
+receipt remain unverified; a later captured email reached Gmail through a
+separate connector relay, documented in verification. Logout/relogin, a
+non-admin account, edit-triggered sync and
 native OS notification visibility remain in the operator acceptance list
 in [verification](verification.md).

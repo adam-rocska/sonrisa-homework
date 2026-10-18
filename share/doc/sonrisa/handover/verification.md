@@ -15,6 +15,7 @@ installation and Google account, with the owner completing consent.
 | Unit suites | **156 passed in aggregate** | Core 54, server 48 unchanged; extension 54 rerun after the live-sync fix; 23 test files |
 | `pnpm build` | PASS | Server/contracts/core type validation; Plasmo Chrome MV3 bundle |
 | `pnpm test:resilience` | PASS | Actual SIGKILL during a leased delivery; durable retry after restart; no replay on another restart |
+| `pnpm test:delivery` | PASS | Isolated RSS HTTP → SQLite → actual email subprocess and Slack HTTP adapter; 429/retry/restart/deduplication |
 | `pnpm test:http` | PASS | Separate actual server process, health, auth rejection, body/batch limits, 100 concurrent requests, graceful SIGTERM |
 | `pnpm --filter @signalpost/extension package` | PASS | Unpacked Chrome directory and ZIP produced |
 
@@ -104,11 +105,13 @@ secret, session token, account email or personal feed URL is included there.
    deliberate-edit path and native OS notification visibility remain
    unverified.
 3. Configure the local MTA and a Slack webhook, route a feed, await a new
-   item after baseline, and independently confirm inbox/channel receipt.
+   item after baseline, and independently confirm inbox/channel receipt
+   through those production transports.
 
 The handover documents the implemented flow and the completed local
-acceptance. It does not claim final delivery acceptance, real email/Slack
-receipt, public deployment, store approval, Safari support or mobile support.
+acceptance. It does not claim final delivery through production SMTP or an
+actual Slack workspace, public deployment, store approval, Safari support
+or mobile support. The later connector-assisted receipt is separate below.
 
 ## Dependency status
 
@@ -145,3 +148,16 @@ boundaries of both flows.
 
 See [localization and adding languages](localization.md), the
 [Hungarian preview](signalpost-hu.png) and [RTL preview](signalpost-hu-rtl.png).
+
+## Destination delivery follow-up
+
+The [controlled delivery probe](../process/2026-10-18-delivery-probe.md)
+passed with both real adapters and isolated process/HTTP receivers. It
+verified quiet baseline, one new-item delivery per destination, Slack 429
+backoff, persistence across restart and no replay of accepted work.
+
+A [separate connector-assisted Gmail receipt](../process/2026-10-18-gmail-receipt.md)
+also passed: the exact generated subject/body reached the owner’s inbox.
+This was an explicit relay through the existing Gmail connector, not the
+production sendmail transport. The local MTA is not configured/running;
+real Slack acceptance and normal SMTP delivery remain unverified.

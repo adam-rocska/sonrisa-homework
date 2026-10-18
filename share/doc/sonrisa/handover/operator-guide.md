@@ -130,6 +130,21 @@ Activity, the Slack channel/inbox and server/MTA status independently.
 This check sends real notifications and is operator-run after credentials
 and target recipients have been selected.
 
+## Test destinations without external services
+
+Run `pnpm test:delivery` from the repository root. A controlled local RSS
+source publishes one item after baseline; production channel adapters talk
+to a sendmail-compatible subprocess receiver and a local Slack-protocol
+HTTP receiver. The probe includes retry, restart and duplicate checks.
+No new dependency, Slack account, email transport or real message is needed.
+See [the probe guide](../process/2026-10-18-delivery-probe.md) for optional
+private MIME capture and the exact coverage boundary.
+
+The author’s macOS MTA was found stopped and without an SMTP relay. One
+captured message was separately relayed using the Gmail connector and its
+inbox subject/body verified. This does not configure application email
+delivery; see [the receipt record](../process/2026-10-18-gmail-receipt.md).
+
 ## Routine operation and recovery
 
 - Run one process under your normal supervisor. SQLite WAL, transactions
