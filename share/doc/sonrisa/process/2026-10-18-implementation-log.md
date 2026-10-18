@@ -1,8 +1,8 @@
 # Implementation, rejected outputs and corrections
 
 Date: 2026-10-18. Product name: Signalpost; namespace: `@signalpost`.
-Owner prompts are archived separately, unchanged except explicit whitespace
-normalization. This document records engineering choices and agent work;
+Owner prompts are archived separately, with explicit whitespace
+normalization and a documented personal RSS URL redaction. This document records engineering choices and agent work;
 it is a curated evidence log, not a claim to contain hidden model reasoning.
 
 ## Work split and supervision
@@ -105,3 +105,18 @@ The Chrome ZIP contains 12 files, no popup, and no fixture or env file.
 Minimum Chrome 124 covers the AbortSignal APIs used by the client;
 [MDN compatibility data](https://raw.githubusercontent.com/mdn/browser-compat-data/main/api/AbortSignal.json)
 was checked. Live provider acceptance remains a separate operator step.
+
+
+## Later acceptance and finalization
+
+The initial 126-test checkpoint above is historical. The final application
+passed all 156 tests in one complete run, followed by all three process
+probes and a rebuilt Chrome package. Actual Chrome OAuth and sync, and a
+separate connector-assisted Gmail receipt, are recorded in the
+[final verification](../handover/verification.md).
+
+Final review caught a working personal RSS capability URL inside an
+archived implementation prompt. The example is now synthetic. Historical
+Git copies also need the same substitution before reviewer access; the
+release record reports the final disposition. No application behavior
+changed for this correction.

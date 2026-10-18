@@ -46,3 +46,8 @@ FYI: ez a solution nem fog mobilon menni (nyilván). Repülünk vele a radar ala
 
 Na, kápráztass el minket :)
 ```
+
+
+Privacy note: the original example contained a working personal RSS
+capability URL. Its numeric identifiers are replaced with synthetic
+values; the selector pattern and the instruction are unchanged.
