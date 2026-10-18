@@ -6,7 +6,7 @@ the entire feed catalog, and route new entries to email or Slack. The
 extension also contains the administrator view.
 
 **Stack:** Plasmo, React, strict TypeScript, tRPC, Better Auth OSS, SQLite,
-pnpm. One repository; no paid SDK, authentication service, queue, or broker.
+pnpm, Pulumi deployment adapters. One repository; no paid SDK, authentication service, queue, or broker.
 Chrome/Chromium is the first target. Safari and mobile are outside this pilot.
 The GUI includes English and Hungarian, browser-local language selection,
 and RTL-ready layout; additional languages use typed translation catalogues.
@@ -59,8 +59,21 @@ Click its toolbar icon on Google Alerts to synchronize. On another page,
 the icon opens Google Alerts. The entire end-user flow, keyboard shortcuts,
 configuration and operational limits are in the handover documents below.
 
+## Portable deployment
+
+A separate Pulumi component deploys the same non-root OCI image to local
+Docker or an explicitly selected existing Kubernetes cluster. The SQLite
+volume survives workload replacement. Configuration, secrets, health checks
+and one-writer rollout rules are mapped by adapters; application code stays
+independent of cloud providers. Local Pulumi state needs no paid service.
+
+See [portable deployment](share/doc/sonrisa/handover/deployment.md) and the
+[stack operator guide](src/infrastructure/README.md). Docker engine and live
+cluster acceptance remain explicitly unverified on this machine.
+
 ## Handover and review
 
+- [Portable deployment](share/doc/sonrisa/handover/deployment.md)
 - [Operator guide](share/doc/sonrisa/handover/operator-guide.md)
 - [Google Alerts and extension guide](share/doc/sonrisa/handover/user-guide.md)
 - [Localization and adding languages](share/doc/sonrisa/handover/localization.md)
@@ -88,6 +101,7 @@ is a project organization convention, not an operating-system root image.
 | `src/core/src/` | Server domain, SQLite adapter, feed engine, channels |
 | `src/server/src/` | Authentication, authorization, tRPC and HTTP entry |
 | `src/extension/src/` | Extension domain, browser adapters and React UI |
+| `src/infrastructure/` | Pulumi intent model, Docker/Kubernetes adapters and deployment tests |
 | `etc/` | Configuration examples; local secrets are ignored |
 | `bin/`, `sbin/` | Developer and administrator utilities |
 | `lib/`, `include/` | Library/header roles, reserved where unused |

@@ -22,6 +22,7 @@ transcript or a record of hidden model reasoning.
 | [012](012-live-auth-setup.md) | Live OAuth setup, user-completed login and visible Chrome installation |
 | [013](013-notification-destination-tests.md) | Test notification destinations without unnecessary accounts or software |
 | [014](014-finalization.md) | Close loose ends and prepare the summary/submission |
+| [015](015-deployment-portability.md) | Add a portable Pulumi deployment boundary and polish the result |
 
 Plans, agent work allocation, checks, rejected outputs and corrections live
 in [the process records](../process/), especially the

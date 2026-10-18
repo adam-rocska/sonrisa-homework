@@ -199,3 +199,13 @@ The pinned Plasmo build toolchain retains known upstream advisories. See
 audit counts, optional-peer paths, scoped fixes and rejected unsafe
 overrides. Do not expose development tooling as a public service. The
 completed checks are not a claim that this dependency tree is advisory-free.
+
+
+## Portable deployment targets
+
+The direct local process above remains supported. For an OCI runtime and
+Pulumi-managed Docker or existing Kubernetes resources, use the
+[portable deployment guide](deployment.md). It includes persistent storage,
+secrets, callback/gateway configuration, backup and teardown. No paid Pulumi
+service is required. `pnpm test:infrastructure` additionally checks the real
+provider's local YAML rendering when Pulumi CLI 3.270.0 is available.

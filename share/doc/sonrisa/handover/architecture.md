@@ -103,3 +103,14 @@ locked dependency change as a restartable release instead.
 Twilio could be evaluated later as an additional channel adapter for SMS
 and other messaging channels. It is not a dependency of this pilot; assess
 its current pricing, availability and fit when that feature is requested.
+
+
+## Deployment boundary
+
+A validated deployment intent maps to the existing environment-variable
+contract and then to a Pulumi component with Docker and Kubernetes adapters.
+The domain, API, SQLite and UI models are unchanged. One OCI runtime uses
+persistent storage, non-root execution and a sendmail-compatible OS utility.
+Provider resources stay in `src/infrastructure`; no cloud SDK enters the
+application. See [deployment](deployment.md) for the supported targets,
+single-writer constraints and verified/unverified environment boundary.

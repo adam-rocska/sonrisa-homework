@@ -82,7 +82,7 @@ Normal SMTP transport and receipt in a real Slack workspace remain operator
 acceptance steps. Google controls upstream coverage and publication latency;
 60-second polling is not a breaking-news SLA. A crash after external receipt
 but before local acknowledgement can duplicate a notification. The pilot
-runs as one server process; deployment, retention policies, horizontal
+runs as one server process; live cloud deployment, retention policies, horizontal
 scaling, browser-store publication and broader browser support are outside
 this implementation. Retained build-tool advisories are documented in the
 [dependency assessment](../process/dependency-advisories.md).
@@ -91,3 +91,14 @@ The submitted repository contains source, milestone history, task prompts,
 plans and validation evidence. Local OAuth secrets, session data and private
 runtime databases are intentionally excluded. No live credentials are
 needed to inspect or run the isolated checks.
+
+
+## Portability follow-up
+
+After the initial handover, the owner requested an explicit deployment
+abstraction. A [separate Pulumi layer](deployment.md) now maps one runtime
+intent into Docker and existing Kubernetes adapters, with a non-root OCI
+image and protected SQLite storage. The [follow-up verification](../process/2026-10-18-deployment-verification.md)
+records 202 passing tests, a real standalone runtime check, actual Pulumi
+provider rendering and the packaging/lifecycle defects found and corrected.
+No live cloud deployment is claimed.

@@ -5,7 +5,17 @@ pnpm 10.28.2. Automated tests use fictional or isolated temporary data.
 The separately recorded native Chrome acceptance used the real local
 installation and Google account, with the owner completing consent.
 
-## Automated results
+## Latest deployment follow-up
+
+The [deployment verification](../process/2026-10-18-deployment-verification.md)
+supersedes the earlier 156-test count below: **202 tests in 27 files** now
+pass with the full check, all existing process probes, actual Pulumi provider
+rendering and Chrome packaging. A standalone production package also passed
+startup/SQLite/health/shutdown checks. A Linux image or live cluster has not
+been deployed. The table below is retained as the earlier application
+checkpoint; the linked follow-up contains the current totals and limits.
+
+## Automated results — original application checkpoint
 
 All checks below were rerun together after the final application changes,
 at approximately 22:05 Europe/Budapest on 2026-10-18. See the
