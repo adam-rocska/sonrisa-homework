@@ -19,6 +19,7 @@ Use Node 24 and pnpm 10.28.2. From the repository root:
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test:resilience
+pnpm test:delivery
 pnpm --filter @signalpost/extension package
 cp etc/signalpost.env.example etc/signalpost.env
 chmod 600 etc/signalpost.env
@@ -53,9 +54,12 @@ configuration and operational limits are in the handover documents below.
 - [Prompt history](share/doc/sonrisa/prompts/)
 - [Decision and correction log](share/doc/sonrisa/process/)
 
-This is an implemented local pilot. Live Google OAuth, Slack acceptance and
-email inbox delivery require operator configuration and separate acceptance
-checks; a green unit suite does not establish those external results.
+This is an implemented local pilot. Live Chrome installation, Google OAuth
+and Google Alerts import passed on the author’s local instance. The
+controlled delivery probe exercises real adapter I/O against isolated
+fixtures without a Slack account or SMTP service. External inbox/channel
+receipt and the production mail transport are separate acceptance boundaries;
+a green local probe does not establish them.
 
 ## Repository layout
 

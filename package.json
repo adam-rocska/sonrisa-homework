@@ -19,7 +19,8 @@
     "start": "node --env-file-if-exists=etc/signalpost.env --import tsx src/server/src/main.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
-    "test:http": "tsx src/server/test/http-smoke.ts"
+    "test:http": "tsx src/server/test/http-smoke.ts",
+    "test:delivery": "tsx sbin/delivery-probe.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
