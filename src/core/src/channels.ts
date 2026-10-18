@@ -30,7 +30,7 @@ export function createSlackChannel(options: { readonly fetch?: FetchFunction; re
 export interface CommandResult { readonly exitCode: number }
 export type CommandRunner = (program: string, args: readonly string[], input: string, timeoutMs: number) => Promise<CommandResult>;
 export const runSendmail: CommandRunner = async (program, args, input, timeoutMs) => new Promise((resolve, reject) => {
-  const child = spawn(program, [...args], { shell: false, stdio: ['pipe', 'ignore', 'pipe'], env: { PATH: '/usr/sbin:/usr/bin:/sbin:/bin' } });
+  const child = spawn(program, [...args], { shell: false, stdio: ['pipe', 'ignore', 'pipe'], env: { PATH: '/usr/sbin:/usr/bin:/sbin:/bin', NODE_ENV: process.env.NODE_ENV ?? 'production' } });
   let settled = false; let timedOut = false;
   const finish = (error?: Error, code = 0): void => {
     if (settled) return; settled = true; clearTimeout(timeout);
@@ -46,6 +46,7 @@ export const runSendmail: CommandRunner = async (program, args, input, timeoutMs
   child.stdin.end(input);
 });
 function encodedSubject(value: string): string {
+  // eslint-disable-next-line no-control-regex -- Reject mail header injection, including embedded NUL.
   if (/[\r\n\u0000]/u.test(value)) throw new DeliveryError('Invalid notification subject', false);
   const chunks: string[] = []; let chunk = '';
   for (const char of [...value].slice(0, 180)) {
@@ -69,6 +70,7 @@ export function renderEmail(from: string, to: string, notification: Notification
 export function createSendmailChannel(options: { readonly from: string; readonly executable?: string; readonly timeoutMs?: number; readonly run?: CommandRunner }): NotificationChannel {
   const from = validateTarget('email', options.from);
   const executable = options.executable ?? '/usr/sbin/sendmail';
+  // eslint-disable-next-line no-control-regex -- Executable paths cannot contain NUL or line breaks.
   if (!executable.startsWith('/') || /[\r\n\u0000]/u.test(executable)) throw new Error('Mail executable must be an absolute path');
   const run = options.run ?? runSendmail;
   return {
