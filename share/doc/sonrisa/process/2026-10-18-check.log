@@ -1,0 +1,78 @@
+
+> signalpost@0.1.0 check /Users/rocskaadam/var/homework/sonrisa
+> pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build
+
+
+> signalpost@0.1.0 typecheck /Users/rocskaadam/var/homework/sonrisa
+> tsc --noEmit && pnpm -r typecheck
+
+Scope: 4 of 5 workspace projects
+src/contracts typecheck$ tsc --noEmit
+src/core typecheck$ tsc --noEmit
+src/contracts typecheck: Done
+src/core typecheck: Done
+src/server typecheck$ tsc --noEmit
+src/server typecheck: Done
+src/extension typecheck$ tsc --noEmit
+src/extension typecheck: Done
+
+> signalpost@0.1.0 lint /Users/rocskaadam/var/homework/sonrisa
+> eslint src --max-warnings 0
+
+
+> signalpost@0.1.0 format:check /Users/rocskaadam/var/homework/sonrisa
+> prettier --check "src/**/*.{ts,tsx,css,json}" "sbin/**/*.ts" "share/test/**/*.ts" "*.{json,mjs}"
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> signalpost@0.1.0 test /Users/rocskaadam/var/homework/sonrisa
+> pnpm -r test
+
+Scope: 4 of 5 workspace projects
+src/contracts test$ vitest run --passWithNoTests
+src/core test$ vitest run
+src/contracts test:  RUN  v4.1.11 /Users/rocskaadam/var/homework/sonrisa/src/contracts
+src/core test:  RUN  v4.1.11 /Users/rocskaadam/var/homework/sonrisa/src/core
+src/contracts test: No test files found, exiting with code 0
+src/contracts test: include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+src/contracts test: exclude:  **/node_modules/**, **/.git/**
+src/contracts test: Done
+src/core test:  Test Files  4 passed (4)
+src/core test:       Tests  54 passed (54)
+src/core test:    Start at  21:09:39
+src/core test:    Duration  428ms (transform 841ms, setup 0ms, import 1.06s, tests 163ms, environment 0ms)
+src/core test: Done
+src/server test$ vitest run
+src/server test:  RUN  v4.1.11 /Users/rocskaadam/var/homework/sonrisa/src/server
+src/server test:  Test Files  6 passed (6)
+src/server test:       Tests  42 passed (42)
+src/server test:    Start at  21:09:40
+src/server test:    Duration  617ms (transform 359ms, setup 0ms, import 923ms, tests 104ms, environment 0ms)
+src/server test: Done
+src/extension test$ vitest run
+src/extension test:  RUN  v4.1.11 /Users/rocskaadam/var/homework/sonrisa/src/extension
+src/extension test:  Test Files  7 passed (7)
+src/extension test:       Tests  30 passed (30)
+src/extension test:    Start at  21:09:41
+src/extension test:    Duration  544ms (transform 242ms, setup 0ms, import 360ms, tests 135ms, environment 377ms)
+src/extension test: Done
+
+> signalpost@0.1.0 build /Users/rocskaadam/var/homework/sonrisa
+> pnpm -r build
+
+Scope: 4 of 5 workspace projects
+src/contracts build$ tsc --noEmit
+src/core build$ tsc --noEmit
+src/contracts build: Done
+src/core build: Done
+src/server build$ tsc --noEmit
+src/server build: Done
+src/extension build$ plasmo build --target=chrome-mv3
+src/extension build: 🟣 Plasmo v0.90.5
+src/extension build: 🔴 The Browser Extension Framework
+src/extension build: 🔵 INFO   | Prepare to bundle the extension...
+src/extension build: 🔵 INFO   | Building for target: chrome-mv3
+src/extension build: 🔵 INFO   | Loaded environment variables from: []
+src/extension build: 🟢 DONE   | Finished in 1244ms!
+src/extension build: Done
