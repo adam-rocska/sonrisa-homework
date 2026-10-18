@@ -8,9 +8,8 @@ overrides:
   plasmo>fflate: 0.8.3
   lmdb>msgpackr: 1.11.5
   '@plasmohq/parcel-transformer-inline-css>browserslist': 4.28.7
-  better-auth@1.7.10>svelte: '-'
-  better-auth@1.7.10>vue: '-'
-  better-auth@1.7.10>vitest: '-'
+
+pnpmfileChecksum: sha256-dHqMTc7MFir35/wD89JzTKvktaMTcCi670ZR0leYyY8=
 
 importers:
 
@@ -114,7 +113,7 @@ importers:
         version: 11.19.0(typescript@5.9.3)
       better-auth:
         specifier: 1.7.10
-        version: 1.7.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vitest@4.1.11(@types/node@24.10.1)(jsdom@26.1.0)(less@4.9.1)(lightningcss@1.33.0)(sass@1.105.2)(tsx@4.23.15)(yaml@2.9.1))
+        version: 1.7.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       better-sqlite3:
         specifier: 13.0.3
         version: 13.0.3
@@ -2404,9 +2403,6 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
       solid-js: ^1.0.0
-      svelte: '*'
-      vitest: '*'
-      vue: '*'
     peerDependenciesMeta:
       '@lynx-js/react':
         optional: true
@@ -2437,12 +2433,6 @@ packages:
       react-dom:
         optional: true
       solid-js:
-        optional: true
-      svelte:
-        optional: true
-      vitest:
-        optional: true
-      vue:
         optional: true
 
   better-call@1.4.2:
@@ -6687,7 +6677,7 @@ snapshots:
 
   baseline-browser-mapping@2.11.29: {}
 
-  better-auth@1.7.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vitest@4.1.11(@types/node@24.10.1)(jsdom@26.1.0)(less@4.9.1)(lightningcss@1.33.0)(sass@1.105.2)(tsx@4.23.15)(yaml@2.9.1)):
+  better-auth@1.7.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@better-auth/core': 1.7.10(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.2(zod@4.6.7))(jose@6.2.12)(kysely@0.29.7)(nanostores@1.5.5)
       '@better-auth/drizzle-adapter': 1.7.10(@better-auth/core@1.7.10(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.2(zod@4.6.7))(jose@6.2.12)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.0)
@@ -6709,7 +6699,6 @@ snapshots:
     optionalDependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      vitest: 4.1.11(@types/node@24.10.1)(jsdom@26.1.0)(less@4.9.1)(lightningcss@1.33.0)(sass@1.105.2)(tsx@4.23.15)(yaml@2.9.1)
     transitivePeerDependencies:
       - '@opentelemetry/api'
 

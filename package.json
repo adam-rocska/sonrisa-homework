@@ -42,10 +42,7 @@
     "overrides": {
       "plasmo>fflate": "0.8.3",
       "lmdb>msgpackr": "1.11.5",
-      "@plasmohq/parcel-transformer-inline-css>browserslist": "4.28.7",
-      "better-auth@1.7.10>svelte": "-",
-      "better-auth@1.7.10>vue": "-",
-      "better-auth@1.7.10>vitest": "-"
+      "@plasmohq/parcel-transformer-inline-css>browserslist": "4.28.7"
     }
   },
   "dependencies": {
