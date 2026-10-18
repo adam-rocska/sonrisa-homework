@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod/v3';
 const identifier = z.string().min(1).max(128);
 const instant = z.string().datetime();
 const channel = z.enum(['email', 'slack']);

@@ -8,22 +8,28 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "tsc --noEmit && pnpm -r typecheck",
     "lint": "eslint src --max-warnings 0",
     "test": "pnpm -r test",
     "build": "pnpm -r build",
-    "dev:server": "pnpm --filter @signalpost/server dev",
+    "dev:server": "node --watch --env-file-if-exists=etc/signalpost.env --import tsx src/server/src/main.ts",
     "dev:extension": "pnpm --filter @signalpost/extension dev",
-    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "test:resilience": "tsx sbin/resilience-probe.ts",
+    "start": "node --env-file-if-exists=etc/signalpost.env --import tsx src/server/src/main.ts",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
+    "test:http": "tsx src/server/test/http-smoke.ts"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.5",
-    "eslint": "9.39.5",
+    "@eslint/js": "10.0.1",
+    "eslint": "10.13.0",
     "typescript-eslint": "8.71.2",
     "typescript": "5.9.3",
-    "vitest": "4.0.18",
+    "vitest": "4.1.11",
     "tsx": "4.23.15",
-    "@types/node": "24.10.1"
+    "@types/node": "24.10.1",
+    "prettier": "3.9.10"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -33,6 +39,11 @@
       "lmdb",
       "msgpackr-extract",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "plasmo>fflate": "0.8.3",
+      "lmdb>msgpackr": "1.11.5",
+      "@plasmohq/parcel-transformer-inline-css>browserslist": "4.28.7"
+    }
   }
 }
