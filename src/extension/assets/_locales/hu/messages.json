@@ -1,0 +1,11 @@
+{
+  "extensionDescription": {
+    "message": "Google Alerts-értesítések az általad választott csatornákon."
+  },
+  "commandSync": {
+    "message": "Google Alerts szinkronizálása"
+  },
+  "commandDashboard": {
+    "message": "Signalpost kezelőfelület megnyitása"
+  }
+}

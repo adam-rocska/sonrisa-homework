@@ -1,4 +1,12 @@
 import notificationIcon from 'url:../assets/icon.png';
+import { createTranslator } from './i18n';
+import { getLocale } from './i18n/preferences';
+import {
+  describeError,
+  LocalizedError,
+  translateActionResult,
+  type SystemMessage,
+} from './i18n/errors';
 import { SnapshotCoordinator } from './application/snapshot-coordinator';
 import type { CatalogInspection, CatalogSnapshot } from './domain/catalog';
 import { createApiFor } from './infrastructure/api';
@@ -9,13 +17,7 @@ import {
   messageSchema,
   type ActionResult,
 } from './infrastructure/protocol';
-import {
-  errorMessage,
-  getBinding,
-  getSession,
-  getSettings,
-  setSyncStatus,
-} from './infrastructure/storage';
+import { getBinding, getSession, getSettings, setSyncStatus } from './infrastructure/storage';
 
 interface SyncRequest {
   readonly snapshot: CatalogSnapshot;
@@ -29,27 +31,30 @@ async function currentIdentity(): Promise<SyncIdentity | null> {
 }
 const coordinator = new SnapshotCoordinator<SyncRequest>(async ({ snapshot, identity }) => {
   if (!sameIdentity(identity, await currentIdentity()))
-    throw new Error('Your account or server changed. Sync again from the current account.');
+    throw new LocalizedError('error.identityChanged');
   const binding = await getBinding();
-  if (binding && binding !== snapshot.sourceId)
-    throw new Error('This Google Alerts account differs from the connected account.');
+  if (binding && binding !== snapshot.sourceId) throw new LocalizedError('error.sourceMismatch');
   const api = createApiFor(identity.apiBaseUrl, identity.token);
   await api.catalog.replace.mutate({ sourceId: snapshot.sourceId, feeds: [...snapshot.feeds] });
   if (!sameIdentity(identity, await currentIdentity()))
-    throw new Error('Your account or server changed while syncing. Refresh the current account.');
+    throw new LocalizedError('error.identityChanged');
   // Write the captured principal's key; never read a new identity during this write.
   await chrome.storage.local.set({
     [`binding:${identity.apiBaseUrl}:${identity.userId}`]: snapshot.sourceId,
   });
 });
 
-async function notify(message: string): Promise<void> {
+async function result(ok: boolean, descriptor: SystemMessage): Promise<ActionResult> {
+  const t = createTranslator((await getLocale()).language);
+  return { ok, ...descriptor, message: translateActionResult({ ...descriptor, message: '' }, t) };
+}
+async function notify(status: ActionResult): Promise<void> {
   try {
     await chrome.notifications.create('signalpost-status', {
       type: 'basic',
       iconUrl: notificationIcon,
       title: 'Signalpost',
-      message,
+      message: translateActionResult(status, createTranslator((await getLocale()).language)),
     });
   } catch {
     // OS notification preferences must not turn a successful sync into a failed one.
@@ -62,44 +67,44 @@ async function syncInspection(
   const at = new Date().toISOString();
   let identity: SyncIdentity | null = null;
   try {
-    if (inspection.status === 'signed-out')
-      throw new Error('Please sign in to Google Alerts first, then press Signalpost again.');
+    if (inspection.status === 'signed-out') throw new LocalizedError('error.alertsSignIn');
     if (inspection.status === 'unavailable') throw new Error(inspection.reason);
-    if (inspection.snapshot.feeds.length === 0)
-      throw new Error(
-        'No RSS links are visible, so this Google account cannot be verified. Use Settings → Clear synced feeds to explicitly empty the catalog.',
-      );
+    if (inspection.snapshot.feeds.length === 0) throw new LocalizedError('error.noRss');
     identity = await currentIdentity();
-    if (!identity)
-      throw new Error(
-        'Sign in to Signalpost first. Its Google sign-in is separate from the Google Alerts page.',
-      );
+    if (!identity) throw new LocalizedError('error.signalpostSignIn');
     await setSyncStatus({
+      ...(await result(true, { messageKey: 'sync.replacing' })),
       state: 'syncing',
       at,
-      message: 'Replacing your catalog with the complete Google Alerts snapshot…',
     });
     await coordinator.enqueue({ snapshot: inspection.snapshot, identity });
     if (!sameIdentity(identity, await currentIdentity()))
-      throw new Error('Your account or server changed. Sync again.');
-    const message = `${inspection.snapshot.feeds.length} RSS feeds synced.${inspection.emailOnlyCount ? ` ${inspection.emailOnlyCount} email-only alerts were skipped.` : ''}`;
+      throw new LocalizedError('error.identityChanged');
+    const status = await result(true, {
+      messageKey: 'sync.success',
+      messageParams: {
+        count: inspection.snapshot.feeds.length,
+        skipped: inspection.emailOnlyCount,
+      },
+    });
     await setSyncStatus({
+      ...status,
       state: 'success',
       at: new Date().toISOString(),
-      message,
       feedCount: inspection.snapshot.feeds.length,
+      emailOnlyCount: inspection.emailOnlyCount,
     });
     await chrome.action.setBadgeText({ text: '' });
-    if (manual) await notify(message);
-    return { ok: true, message };
+    if (manual) await notify(status);
+    return status;
   } catch (error: unknown) {
-    const message = errorMessage(error);
-    if (identity && !sameIdentity(identity, await currentIdentity())) return { ok: false, message };
-    await setSyncStatus({ state: 'error', at, message });
+    const status = await result(false, describeError(error));
+    if (identity && !sameIdentity(identity, await currentIdentity())) return status;
+    await setSyncStatus({ ...status, state: 'error', at });
     await chrome.action.setBadgeText({ text: '!' });
     await chrome.action.setBadgeBackgroundColor({ color: '#aa251d' });
-    if (manual) await notify(message);
-    return { ok: false, message };
+    if (manual) await notify(status);
+    return status;
   }
 }
 async function readTab(tabId: number): Promise<CatalogInspection> {
@@ -122,30 +127,29 @@ async function openOrSync(clickedTab?: chrome.tabs.Tab): Promise<ActionResult> {
       tab = target;
     } else {
       await chrome.tabs.create({ url: 'https://www.google.com/alerts' });
-      return {
-        ok: true,
-        message: 'Google Alerts opened. Sign in, set RSS delivery, then press Signalpost to sync.',
-      };
+      return result(true, { messageKey: 'sync.openedNew' });
     }
-    if (clickedTab)
-      return { ok: true, message: 'Google Alerts opened. Press Signalpost again to sync.' };
+    if (clickedTab) return result(true, { messageKey: 'sync.opened' });
   }
-  if (tab?.id === undefined) return { ok: false, message: 'Open Google Alerts and try again.' };
+  if (tab?.id === undefined) return result(false, { messageKey: 'sync.openFirst' });
   try {
     return await syncInspection(await readTab(tab.id), true);
-  } catch (error: unknown) {
-    const message = `Reload Google Alerts and try again. ${errorMessage(error)}`;
-    await notify(message);
-    return { ok: false, message };
+  } catch {
+    const status = await result(false, { messageKey: 'sync.reload' });
+    await notify(status);
+    return status;
   }
+}
+async function notifyFailure(error: unknown): Promise<void> {
+  await notify(await result(false, describeError(error)));
 }
 
 chrome.action.onClicked.addListener((tab) => {
-  void openOrSync(tab).catch((error) => notify(errorMessage(error)));
+  void openOrSync(tab).catch(notifyFailure);
 });
 chrome.commands.onCommand.addListener((command) => {
   if (command === 'open-dashboard') void chrome.runtime.openOptionsPage();
-  if (command === 'sync-alerts') void openOrSync().catch((error) => notify(errorMessage(error)));
+  if (command === 'sync-alerts') void openOrSync().catch(notifyFailure);
 });
 chrome.runtime.onInstalled.addListener(() => {
   void chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_CONTEXTS' });
@@ -171,16 +175,15 @@ chrome.runtime.onMessage.addListener((raw: unknown, sender, sendResponse) => {
       return { autoSync: settings.autoSync, ...(boundSourceId ? { boundSourceId } : {}) };
     }
     if (message.type === 'signalpost:snapshot') {
-      if (!(await getSettings()).autoSync)
-        return { ok: true, message: 'Automatic sync is disabled.' };
+      if (!(await getSettings()).autoSync) return result(true, { messageKey: 'sync.disabled' });
       return syncInspection(message.inspection, false);
     }
     if (message.type === 'signalpost:sync') return openOrSync();
     await chrome.runtime.openOptionsPage();
-    return { ok: true, message: 'Signalpost opened.' };
+    return result(true, { messageKey: 'sync.appOpened' });
   };
   void operation()
     .then(sendResponse)
-    .catch((error: unknown) => sendResponse({ ok: false, message: errorMessage(error) }));
+    .catch(async (error: unknown) => sendResponse(await result(false, describeError(error))));
   return true;
 });

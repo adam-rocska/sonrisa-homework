@@ -18,7 +18,7 @@
     "plasmo": "0.90.5"
   },
   "displayName": "Signalpost",
-  "description": "Google Alerts, delivered where you work.",
+  "description": "__MSG_extensionDescription__",
   "dependencies": {
     "@signalpost/contracts": "workspace:*",
     "@signalpost/server": "workspace:*",
@@ -50,16 +50,18 @@
           "default": "Ctrl+Shift+Y",
           "mac": "Command+Shift+Y"
         },
-        "description": "Synchronize Google Alerts"
+        "description": "__MSG_commandSync__"
       },
       "open-dashboard": {
         "suggested_key": {
           "default": "Ctrl+Shift+U",
           "mac": "Command+Shift+U"
         },
-        "description": "Open Signalpost dashboard"
+        "description": "__MSG_commandDashboard__"
       }
     },
-    "minimum_chrome_version": "124"
+    "minimum_chrome_version": "124",
+    "description": "__MSG_extensionDescription__",
+    "default_locale": "en"
   }
 }

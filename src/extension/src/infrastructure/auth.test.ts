@@ -55,6 +55,12 @@ afterEach(() => {
 });
 
 describe('Google sign-in handoff', () => {
+  it('carries the selected language and text direction into the server sign-in screen', async () => {
+    local['localePreferences'] = { language: 'hu', direction: 'rtl' };
+    await signIn();
+    expect(startUrl?.searchParams.get('lang')).toBe('hu');
+    expect(startUrl?.searchParams.get('dir')).toBe('rtl');
+  });
   it('uses S256 PKCE, verifies state, and keeps bearer credentials in trusted session storage', async () => {
     await expect(signIn()).resolves.toEqual({ ...session, apiBaseUrl: 'http://localhost:3000' });
     expect(startUrl?.origin).toBe('http://localhost:3000');

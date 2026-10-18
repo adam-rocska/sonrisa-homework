@@ -1,0 +1,11 @@
+{
+  "extensionDescription": {
+    "message": "Google Alerts, delivered where you work."
+  },
+  "commandSync": {
+    "message": "Synchronize Google Alerts"
+  },
+  "commandDashboard": {
+    "message": "Open Signalpost dashboard"
+  }
+}

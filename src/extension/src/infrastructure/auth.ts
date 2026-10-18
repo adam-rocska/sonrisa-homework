@@ -1,3 +1,4 @@
+import { getLocale } from '../i18n/preferences';
 import {
   authExchangeSchema,
   getSession,
@@ -13,7 +14,7 @@ function base64Url(value: Uint8Array): string {
     .replace(/=+$/, '');
 }
 export async function signIn(): Promise<AuthSession> {
-  const settings = await getSettings();
+  const [settings, locale] = await Promise.all([getSettings(), getLocale()]);
   const verifier = base64Url(crypto.getRandomValues(new Uint8Array(32)));
   const state = base64Url(crypto.getRandomValues(new Uint8Array(32)));
   const challenge = base64Url(
@@ -21,7 +22,13 @@ export async function signIn(): Promise<AuthSession> {
   );
   const redirectUri = chrome.identity.getRedirectURL('auth');
   const url = new URL(`${settings.apiBaseUrl}/auth/start`);
-  url.search = new URLSearchParams({ redirectUri, state, codeChallenge: challenge }).toString();
+  url.search = new URLSearchParams({
+    redirectUri,
+    state,
+    codeChallenge: challenge,
+    lang: locale.language,
+    dir: locale.direction,
+  }).toString();
   const callback = await chrome.identity.launchWebAuthFlow({ url: url.href, interactive: true });
   if (!callback) throw new Error('Google sign-in did not return a result.');
   const result = new URL(callback);

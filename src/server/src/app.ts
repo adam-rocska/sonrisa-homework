@@ -6,6 +6,13 @@ import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { cors } from 'hono/cors';
 import { z } from 'zod';
 import type { ServerConfig } from './config.js';
+import {
+  authPage,
+  escapeHtml,
+  handoffMessage,
+  resolveAuthLocale,
+  scriptValue,
+} from './auth-pages.js';
 import { HandoffBroker, HandoffError } from './handoff.js';
 import { principalFromSession, type AuthBoundary } from './identity.js';
 import { appRouter, type ApplicationStore } from './router.js';
@@ -24,19 +31,6 @@ const exchangeInput = z
     redirectUri: z.string().url().max(200),
   })
   .strict();
-
-function escapeHtml(value: string): string {
-  return value.replace(
-    /[&<>"']/gu,
-    (character) =>
-      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] ??
-      character,
-  );
-}
-
-function page(title: string, body: string, script = '', nonce = ''): string {
-  return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)} · Signalpost</title><style>body{font:18px/1.6 system-ui;max-width:38rem;margin:10vh auto;padding:1.5rem;background:#fafaf9;color:#17201b}h1{line-height:1.2}button{font:inherit;padding:.75rem 1rem;border:2px solid #173d2a;border-radius:.5rem;background:#173d2a;color:white;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #dc6900;outline-offset:4px}code{overflow-wrap:anywhere}p[role=alert]{color:#8b1c11}</style><main><h1>${escapeHtml(title)}</h1>${body}</main>${script === '' ? '' : `<script nonce="${nonce}">${script}</script>`}</html>`;
-}
 
 export function createApp({
   config,
@@ -79,24 +73,37 @@ export function createApp({
     context.json({ status: 'ok', authentication: auth.configured ? 'configured' : 'unconfigured' }),
   );
   app.all('/api/auth/*', (context) => auth.handler(context.req.raw));
-  app.get('/', (context) =>
-    context.html(
-      page(
-        'Signalpost server',
-        '<p>This server serves the Signalpost browser extension. Open the extension to sign in and manage your alerts.</p><p><a href="/healthz">Server health</a></p>',
+  app.get('/', (context) => {
+    const locale = resolveAuthLocale(
+      context.req.query('lang'),
+      context.req.query('dir'),
+      context.req.header('Accept-Language'),
+    );
+    return context.html(
+      authPage(
+        locale,
+        locale.messages.server,
+        `<p>${escapeHtml(locale.messages.serverIntro)}</p><p><a href="/healthz">${escapeHtml(locale.messages.health)}</a></p>`,
       ),
-    ),
-  );
+    );
+  });
 
   app.get('/auth/start', (context) => {
+    const locale = resolveAuthLocale(
+      context.req.query('lang'),
+      context.req.query('dir'),
+      context.req.header('Accept-Language'),
+    );
+    const text = locale.messages;
     if (!auth.configured) {
       const requirements = config.authConfigurationIssues
-        .map((issue) => `<li>${escapeHtml(issue)}</li>`)
+        .map((issue) => `<li><bdi>${escapeHtml(issue)}</bdi></li>`)
         .join('');
       return context.html(
-        page(
-          'Google sign-in needs configuration',
-          `<p>The server is running, but Google authentication has not been configured.</p><ul>${requirements}</ul><p>Register this callback in your Google Web application client: <code>${escapeHtml(config.baseUrl)}/api/auth/callback/google</code>.</p><p>After configuration, restart the server and sign in from the extension again.</p>`,
+        authPage(
+          locale,
+          text.configuration,
+          `<p>${escapeHtml(text.configurationIntro)}</p><ul>${requirements}</ul><p>${escapeHtml(text.callback)} <code>${escapeHtml(config.baseUrl)}/api/auth/callback/google</code>.</p><p>${escapeHtml(text.restart)}</p>`,
         ),
         503,
       );
@@ -114,17 +121,18 @@ export function createApp({
         path: '/auth',
         maxAge: 600,
       });
-      const callbackURL = `${config.baseUrl}/auth/complete?flow=${flowId}`;
+      const callbackURL = `${config.baseUrl}/auth/complete?flow=${flowId}&lang=${locale.language}&dir=${locale.direction}`;
       const nonce = randomBytes(18).toString('base64');
       context.header(
         'Content-Security-Policy',
         `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'`,
       );
-      const script = `const button=document.querySelector('button');const status=document.getElementById('status');async function signIn(){button.disabled=true;status.textContent='Opening Google sign-in…';try{const response=await fetch('/api/auth/sign-in/social',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:'google',callbackURL:${JSON.stringify(callbackURL)},disableRedirect:true})});const result=await response.json();if(!response.ok||typeof result.url!=='string')throw new Error('Google sign-in could not start. Check the server OAuth configuration.');const destination=new URL(result.url);if(destination.origin!=='https://accounts.google.com')throw new Error('Unexpected authentication destination.');location.assign(destination.href);}catch(error){status.textContent=error instanceof Error?error.message:'Sign-in failed.';status.setAttribute('role','alert');button.disabled=false;}}button.addEventListener('click',signIn);void signIn();`;
+      const script = `const button=document.querySelector('button');const status=document.getElementById('status');const messages={opening:${scriptValue(text.opening)},startError:${scriptValue(text.startError)},unexpected:${scriptValue(text.unexpected)},failed:${scriptValue(text.failed)}};async function signIn(){button.disabled=true;status.textContent=messages.opening;try{const response=await fetch('/api/auth/sign-in/social',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:'google',callbackURL:${scriptValue(callbackURL)},disableRedirect:true})});const result=await response.json();if(!response.ok||typeof result.url!=='string')throw new Error(messages.startError);const destination=new URL(result.url);if(destination.origin!=='https://accounts.google.com')throw new Error(messages.unexpected);location.assign(destination.href);}catch(error){status.textContent=error instanceof Error&&[messages.startError,messages.unexpected].includes(error.message)?error.message:messages.failed;status.setAttribute('role','alert');button.disabled=false;}}button.addEventListener('click',signIn);void signIn();`;
       return context.html(
-        page(
-          'Sign in to Signalpost',
-          '<p>Google will ask which account you want to use. Choose the account whose alerts you will synchronize.</p><p id="status" aria-live="polite">Starting sign-in…</p><button type="button">Continue with Google</button>',
+        authPage(
+          locale,
+          text.signIn,
+          `<p>${escapeHtml(text.chooseAccount)}</p><p id="status" aria-live="polite">${escapeHtml(text.starting)}</p><button type="button">${escapeHtml(text.continue)}</button>`,
           script,
           nonce,
         ),
@@ -132,7 +140,11 @@ export function createApp({
     } catch (error) {
       if (error instanceof HandoffError)
         return context.html(
-          page('Sign-in could not start', `<p role="alert">${escapeHtml(error.message)}</p>`),
+          authPage(
+            locale,
+            text.cannotStart,
+            `<p role="alert">${escapeHtml(handoffMessage(locale, error.message))}</p>`,
+          ),
           400,
         );
       throw error;
@@ -140,6 +152,12 @@ export function createApp({
   });
 
   app.get('/auth/complete', async (context) => {
+    const locale = resolveAuthLocale(
+      context.req.query('lang'),
+      context.req.query('dir'),
+      context.req.header('Accept-Language'),
+    );
+    const text = locale.messages;
     const flowId = context.req.query('flow') ?? '';
     const cookie = getCookie(context, 'signalpost_flow') ?? '';
     deleteCookie(context, 'signalpost_flow', { path: '/auth' });
@@ -149,10 +167,7 @@ export function createApp({
       !timingSafeEqual(Buffer.from(flowId), Buffer.from(cookie))
     ) {
       return context.html(
-        page(
-          'Sign-in expired',
-          '<p>Start sign-in again from the extension. The browser could not verify the original sign-in request.</p>',
-        ),
+        authPage(locale, text.expired, `<p>${escapeHtml(text.expiredHelp)}</p>`),
         400,
       );
     }
@@ -160,10 +175,7 @@ export function createApp({
     const principal = principalFromSession(session, config.adminEmails);
     if (session === null || principal === null)
       return context.html(
-        page(
-          'Google sign-in required',
-          '<p>Sign in again with a verified Google email address from the extension.</p>',
-        ),
+        authPage(locale, text.required, `<p>${escapeHtml(text.requiredHelp)}</p>`),
         401,
       );
     try {
@@ -175,7 +187,10 @@ export function createApp({
       return context.redirect(redirect, 302);
     } catch (error) {
       if (error instanceof HandoffError)
-        return context.html(page('Sign-in expired', `<p>${escapeHtml(error.message)}</p>`), 400);
+        return context.html(
+          authPage(locale, text.expired, `<p>${escapeHtml(text.expiredHelp)}</p>`),
+          400,
+        );
       throw error;
     }
   });
