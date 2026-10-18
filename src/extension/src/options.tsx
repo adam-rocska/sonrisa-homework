@@ -30,6 +30,7 @@ import {
   saveSettings,
   setBinding,
   setSession,
+  syncStatusSchema,
   type Settings,
   type SyncStatus,
 } from './infrastructure/storage';
@@ -250,14 +251,13 @@ function OptionsPage() {
   const mac = isMacPlatform(navigator.platform);
   const modifier = mac ? '⌘' : 'Ctrl';
 
-  const refresh = useCallback(async (): Promise<void> => {
-    const [storedSettings, session, status] = await Promise.all([
-      getSettings(),
-      getSession(),
-      getSyncStatus(),
-    ]);
-    setSettings(storedSettings);
-    setSyncStatusState(status);
+  const refresh = useCallback(async (preserveDrafts = false): Promise<void> => {
+    const session = await getSession();
+    if (!preserveDrafts) {
+      const [storedSettings, status] = await Promise.all([getSettings(), getSyncStatus()]);
+      setSettings(storedSettings);
+      setSyncStatusState(status);
+    }
     if (!session) {
       setViewer(null);
       setCatalog(initialCatalog);
@@ -320,12 +320,40 @@ function OptionsPage() {
     });
   }, [perform]);
   useEffect(() => {
+    let active = true;
+    let refreshing = false;
+    let refreshRequested = false;
     void refresh().catch((error: unknown) => setNotice({ kind: 'error', value: error }));
+    // Background sync changes server data, not the user's unsaved form fields.
+    // Serialize reads and collapse bursts so an older result cannot win a race.
+    const refreshAfterSync = async (): Promise<void> => {
+      refreshRequested = true;
+      if (refreshing) return;
+      refreshing = true;
+      try {
+        while (active && refreshRequested) {
+          refreshRequested = false;
+          try {
+            await refresh(true);
+          } catch (error: unknown) {
+            if (active) setNotice({ kind: 'error', value: error });
+          }
+        }
+      } finally {
+        refreshing = false;
+      }
+    };
     const changed = (changes: Record<string, chrome.storage.StorageChange>, area: string): void => {
-      if (area === 'local' && changes['syncStatus']) void getSyncStatus().then(setSyncStatusState);
+      if (area !== 'local' || !changes['syncStatus']) return;
+      const parsed = syncStatusSchema.safeParse(changes['syncStatus'].newValue);
+      setSyncStatusState(parsed.success ? parsed.data : null);
+      if (parsed.success && parsed.data.state === 'success') void refreshAfterSync();
     };
     chrome.storage.onChanged.addListener(changed);
-    return () => chrome.storage.onChanged.removeListener(changed);
+    return () => {
+      active = false;
+      chrome.storage.onChanged.removeListener(changed);
+    };
   }, [refresh]);
   useEffect(() => {
     const listener = (event: KeyboardEvent): void => {
