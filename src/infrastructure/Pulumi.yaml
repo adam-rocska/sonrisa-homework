@@ -1,0 +1,8 @@
+name: signalpost
+runtime:
+  name: nodejs
+  options:
+    typescript: false
+    nodeargs: --import tsx
+main: src/index.ts
+description: Signalpost runtime on local Docker or an existing Kubernetes cluster

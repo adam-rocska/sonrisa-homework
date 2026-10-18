@@ -1,0 +1,10 @@
+# Reference only. Initialize a stack and set its secret values interactively.
+config:
+  signalpost:target: docker
+  signalpost:image: signalpost:0.1.0
+  signalpost:publicUrl: http://localhost:3300
+  signalpost:googleClientId: replace-with-google-web-client-id
+  signalpost:extensionIds:
+    - aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  signalpost:dockerSocket: unix:///var/run/docker.sock
+  signalpost:hostPort: 3300

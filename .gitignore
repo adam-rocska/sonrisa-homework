@@ -23,3 +23,8 @@
 *.tsbuildinfo
 
 **/*.env
+
+# Local infrastructure state and stack configuration.
+**/.pulumi/
+**/Pulumi.*.yaml
+!src/infrastructure/etc/Pulumi.*.example.yaml

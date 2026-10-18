@@ -17,10 +17,15 @@
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
     "test:resilience": "tsx sbin/resilience-probe.ts",
     "start": "node --env-file-if-exists=etc/signalpost.env --import tsx src/server/src/main.ts",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json,mjs}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json,mjs}\" \"sbin/**/*.ts\" \"share/test/**/*.ts\" \"*.{json,mjs}\"",
     "test:http": "tsx src/server/test/http-smoke.ts",
-    "test:delivery": "tsx sbin/delivery-probe.ts"
+    "test:delivery": "tsx sbin/delivery-probe.ts",
+    "container:build": "docker build --file src/server/Dockerfile --tag signalpost:0.1.0 .",
+    "infra:preview": "pulumi -C src/infrastructure preview",
+    "infra:up": "pulumi -C src/infrastructure up",
+    "infra:destroy": "pulumi -C src/infrastructure destroy",
+    "test:infrastructure": "tsx sbin/infrastructure-probe.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

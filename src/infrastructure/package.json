@@ -1,0 +1,16 @@
+{
+  "name": "@signalpost/infrastructure",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pulumi/pulumi": "3.270.0",
+    "@pulumi/docker": "5.2.0",
+    "@pulumi/kubernetes": "4.34.2"
+  }
+}

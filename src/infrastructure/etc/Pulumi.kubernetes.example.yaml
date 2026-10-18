@@ -1,0 +1,13 @@
+# Existing cluster/namespace/storage and a separately configured TLS ingress.
+# This does not provision an AWS, Azure or Google Cloud account/cluster.
+config:
+  signalpost:target: kubernetes
+  signalpost:image: registry.example.com/signalpost:0.1.0
+  signalpost:publicUrl: https://alerts.example.com
+  signalpost:googleClientId: replace-with-google-web-client-id
+  signalpost:extensionIds:
+    - aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  signalpost:kubeContext: explicitly-selected-existing-context
+  signalpost:namespace: existing-signalpost-namespace
+  signalpost:storageSize: 1Gi
+  # Set storageClass to an existing block/local filesystem storage class.
