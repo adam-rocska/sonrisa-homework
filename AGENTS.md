@@ -16,6 +16,15 @@ These rules apply recursively to the entire repository.
 - Preserve every task prompt and record meaningful checks, rejected
   outputs and corrections as work proceeds. Never commit secrets.
 
+## Final handover
+
+- Include an end-user Google Alerts guide in the final handover package:
+  creating/editing alerts, selecting RSS delivery, importing the feed into
+  the extension, and later changing/removing subscriptions. Explain which
+  actions happen in Google Alerts and which happen in our product.
+- Validate the instructions against the implemented user flow before
+  marking the handover documentation complete.
+
 ## Git commits
 
 Make many small atomic commits: commit each small increment.
