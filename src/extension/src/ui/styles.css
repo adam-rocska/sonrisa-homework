@@ -16,6 +16,7 @@
 }
 body {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 button,
 input,
@@ -35,9 +36,11 @@ button {
   background: white;
   color: #18221e;
   border-radius: 7px;
-  min-height: 44px;
+  min-block-size: 44px;
   padding: 0.5rem 0.9rem;
   font-weight: 600;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
 }
 button:hover {
   background: #e9efea;
@@ -69,17 +72,18 @@ a {
 input:not([type='checkbox']),
 select {
   display: block;
-  width: 100%;
+  inline-size: 100%;
+  min-inline-size: 0;
   padding: 0.65rem 0.8rem;
   border: 1px solid #819489;
   border-radius: 6px;
   background: white;
   color: #18221e;
-  min-height: 46px;
+  min-block-size: 46px;
 }
 input[type='checkbox'] {
-  width: 20px;
-  height: 20px;
+  inline-size: 20px;
+  block-size: 20px;
   margin: 0;
   accent-color: #19573f;
   flex-shrink: 0;
@@ -92,18 +96,18 @@ label.check {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  min-height: 44px;
+  min-block-size: 44px;
   font-weight: 500;
 }
 label > input:not([type='checkbox']),
 label > select {
-  margin-top: 0.4rem;
+  margin-block-start: 0.4rem;
 }
 h1,
 h2,
 h3,
 p {
-  margin-top: 0;
+  margin-block-start: 0;
 }
 h1 {
   font-size: 1.5rem;
@@ -114,11 +118,11 @@ h2 {
   font-size: 1.65rem;
   letter-spacing: -0.035em;
   line-height: 1.2;
-  margin-bottom: 0.7rem;
+  margin-block-end: 0.7rem;
 }
 h3 {
   font-size: 1.1rem;
-  margin-bottom: 0.6rem;
+  margin-block-end: 0.6rem;
   overflow-wrap: anywhere;
 }
 small,
@@ -130,7 +134,7 @@ small {
 }
 header {
   background: white;
-  border-bottom: 1px solid #cdd5ce;
+  border-block-end: 1px solid #cdd5ce;
   padding: 1.1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -138,17 +142,19 @@ header {
   gap: 1rem;
 }
 .brand {
+  min-inline-size: 0;
   display: flex;
   align-items: center;
   gap: 0.85rem;
 }
 .brand-mark {
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   color: white;
   background: #19573f;
-  width: 42px;
-  height: 42px;
+  inline-size: 42px;
+  block-size: 42px;
   border-radius: 11px;
   font-weight: 800;
   font-size: 1.35rem;
@@ -161,10 +167,10 @@ header {
   align-items: center;
 }
 .layout {
-  max-width: 1280px;
+  max-inline-size: 1280px;
   margin: auto;
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 220px minmax(0, 1fr);
   gap: 2.5rem;
   padding: 2rem;
 }
@@ -174,10 +180,11 @@ nav {
   gap: 0.35rem;
   align-self: start;
   position: sticky;
-  top: 1.5rem;
+  inset-block-start: 1.5rem;
 }
 nav button {
-  text-align: left;
+  min-inline-size: 0;
+  text-align: start;
   border-color: transparent;
   background: transparent;
 }
@@ -191,26 +198,33 @@ nav button[aria-current='page'] {
   font-size: 0.88rem;
 }
 main {
-  min-width: 0;
+  min-inline-size: 0;
 }
 .section-intro {
-  margin-bottom: 1.4rem;
+  margin-block-end: 1.4rem;
 }
 .card {
   border: 1px solid #c9d4cc;
   background: white;
   border-radius: 10px;
   padding: 1.4rem;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
 }
 .card-header {
   display: flex;
   align-items: start;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 1rem;
 }
+.card-header > *,
+.header-actions > *,
+.meta > *,
+.stat {
+  min-inline-size: 0;
+}
 .card p:last-child {
-  margin-bottom: 0;
+  margin-block-end: 0;
 }
 .stack {
   display: grid;
@@ -224,17 +238,21 @@ main {
 }
 .status {
   border: 1px solid #b9cfc1;
-  border-left: 4px solid #287752;
+  border-inline-start: 4px solid #287752;
   padding: 0.8rem 1rem;
   border-radius: 6px;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
   background: #e9f4ec;
   overflow-wrap: anywhere;
+}
+/* Keep a localized timestamp together when a mixed-direction status wraps. */
+.status > small {
+  display: inline-block;
 }
 .status.error {
   background: #fff0ef;
   border-color: #dfb0ac;
-  border-left-color: #a72724;
+  border-inline-start-color: #a72724;
   color: #7b1c19;
 }
 .badge {
@@ -245,8 +263,7 @@ main {
   color: #3b5142;
   font-size: 0.85rem;
   font-weight: 650;
-  text-transform: capitalize;
-  white-space: nowrap;
+  max-inline-size: 100%;
 }
 .badge.failed {
   background: #fbe3df;
@@ -280,9 +297,9 @@ legend {
 }
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.7rem;
-  margin-bottom: 1.2rem;
+  margin-block-end: 1.2rem;
 }
 .stat {
   background: white;
@@ -302,17 +319,23 @@ legend {
   background: #fbfcfa;
 }
 .empty p {
-  max-width: 60ch;
+  max-inline-size: 60ch;
 }
 .separator {
-  border-top: 1px solid #d1d9d2;
-  padding-top: 1rem;
-  margin-top: 1rem;
+  border-block-start: 1px solid #d1d9d2;
+  padding-block-start: 1rem;
+  margin-block-start: 1rem;
 }
 .danger-zone {
   border-color: #d2a9a4;
 }
+.code,
+kbd {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
 .code {
+  text-align: start;
   overflow-wrap: anywhere;
   font-family: ui-monospace, monospace;
   font-size: 0.88rem;
@@ -322,7 +345,7 @@ legend {
 }
 kbd {
   border: 1px solid #b9c5bd;
-  border-bottom-width: 2px;
+  border-block-end-width: 2px;
   border-radius: 4px;
   background: #f8faf7;
   padding: 0.1em 0.35em;
@@ -335,30 +358,32 @@ dialog {
   border: 1px solid #becdc2;
   border-radius: 12px;
   padding: 1.5rem;
-  max-width: 560px;
-  width: calc(100vw - 3rem);
+  max-inline-size: 560px;
+  max-block-size: calc(100dvh - 3rem);
+  overflow: auto;
+  inline-size: calc(100vw - 3rem);
   box-shadow: 0 20px 70px #13291c33;
 }
 dialog::backdrop {
   background: #0a1d1555;
 }
 dialog .stack > button {
-  text-align: left;
+  text-align: start;
 }
 .skip {
   position: absolute;
-  left: 1rem;
-  top: -100px;
+  inset-inline-start: 1rem;
+  inset-block-start: -100px;
   padding: 0.5rem;
   background: white;
   z-index: 10;
 }
 .skip:focus {
-  top: 1rem;
+  inset-block-start: 1rem;
 }
 @media (max-width: 900px) {
   .layout {
-    grid-template-columns: 175px 1fr;
+    grid-template-columns: 175px minmax(0, 1fr);
     gap: 1.2rem;
     padding: 1.3rem;
   }
@@ -368,6 +393,38 @@ dialog .stack > button {
   .header-identity {
     display: none;
   }
+}
+/* Translation expansion must fit a narrow browser dashboard pane. */
+@media (max-width: 700px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  header {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+  nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    position: static;
+  }
+  .nav-foot {
+    grid-column: 1 / -1;
+    padding-block: 0.5rem;
+  }
+  .card,
+  .empty {
+    padding: 1rem;
+  }
+  .stats {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  }
+}
+:root[dir='rtl'] h1,
+:root[dir='rtl'] h2 {
+  letter-spacing: normal;
 }
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -388,12 +445,26 @@ dialog .stack > button {
 }
 .sr-only {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  inline-size: 1px;
+  block-size: 1px;
   padding: 0;
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Keep each shortcut attached to its label across bidi and line wrapping. */
+.shortcut-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  padding: 0;
+  list-style: none;
+}
+.shortcut-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }

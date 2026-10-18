@@ -23,7 +23,6 @@ import { signIn, signOut } from './infrastructure/auth';
 import { resultSchema } from './infrastructure/protocol';
 import {
   defaultSettings,
-  errorMessage,
   getSession,
   getSettings,
   getSyncStatus,
@@ -34,21 +33,25 @@ import {
   type Settings,
   type SyncStatus,
 } from './infrastructure/storage';
+import { LocaleProvider, useLocale } from './i18n/react';
+import { isLanguage, locales } from './i18n/locales';
+import { localizeError, translateActionResult, translateSyncStatus } from './i18n/errors';
+import type { UiMessageKey } from './i18n/ui.en';
 import './ui/styles.css';
 
 type Section = 'feeds' | 'destinations' | 'activity' | 'admin' | 'settings';
-const sectionLabels: Record<Section, string> = {
-  feeds: 'My feeds',
-  destinations: 'Destinations',
-  activity: 'Delivery activity',
-  admin: 'Administration',
-  settings: 'Settings',
+const sectionLabels: Record<Section, UiMessageKey> = {
+  feeds: 'ui.section.feeds',
+  destinations: 'ui.section.destinations',
+  activity: 'ui.section.activity',
+  admin: 'ui.section.admin',
+  settings: 'ui.section.settings',
 };
-const initialCatalog: Catalog = { sourceId: null, syncedAt: 'Not yet', feeds: [] };
-interface Notice {
-  readonly error: boolean;
-  readonly text: string;
-}
+const initialCatalog: Catalog = { sourceId: null, syncedAt: null, feeds: [] };
+type Notice =
+  | { readonly kind: 'message'; readonly key: UiMessageKey }
+  | { readonly kind: 'error'; readonly value: unknown }
+  | { readonly kind: 'action'; readonly result: ReturnType<typeof resultSchema.parse> };
 
 function Empty({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -69,31 +72,42 @@ function FeedCard({
   busy: boolean;
   save: (feedId: string, enabled: boolean, destinationIds: string[]) => Promise<void>;
 }) {
+  const { t, formatDate } = useLocale();
   const [enabled, setEnabled] = useState(feed.isEnabled);
   const [routes, setRoutes] = useState([...feed.routes]);
   return (
     <article className="card" aria-label={feed.label}>
       <div className="card-header">
-        <h3>{feed.label}</h3>
-        <span className="badge">{feed.isEnabled ? 'Watching' : 'Paused'}</span>
+        <h3>
+          <bdi dir="auto">{feed.label}</bdi>
+        </h3>
+        <span className="badge">{t(feed.isEnabled ? 'ui.feed.watching' : 'ui.feed.paused')}</span>
       </div>
       <div className="meta">
-        <span>Checked: {feed.lastChecked}</span>
-        <span>Next check: {feed.nextCheck}</span>
+        <span>
+          {t('ui.feed.checked')}: <bdi>{formatDate(feed.lastChecked)}</bdi>
+        </span>
+        <span>
+          {t('ui.feed.nextCheck')}: <bdi>{formatDate(feed.nextCheck)}</bdi>
+        </span>
       </div>
-      {feed.issue && <p className="status error">{feed.issue}</p>}
+      {feed.issue && (
+        <p className="status error">
+          <bdi dir="auto">{localizeError(feed.issue, t)}</bdi>
+        </p>
+      )}
       <label className="check">
         <input
           type="checkbox"
           checked={enabled}
           onChange={(event) => setEnabled(event.currentTarget.checked)}
         />
-        Watch this feed
+        {t('ui.feed.watch')}
       </label>
       <fieldset>
-        <legend>Send new items to</legend>
+        <legend>{t('ui.feed.sendTo')}</legend>
         {destinations.length === 0 ? (
-          <p className="muted">Add an email or Slack destination first.</p>
+          <p className="muted">{t('ui.feed.addDestination')}</p>
         ) : (
           destinations.map((destination) => (
             <label className="check" key={destination.id}>
@@ -109,10 +123,10 @@ function FeedCard({
                   );
                 }}
               />
-              {destination.label}{' '}
+              <bdi dir="auto">{destination.label}</bdi>{' '}
               <small>
-                ({destination.channel}
-                {destination.isEnabled ? '' : ', paused'})
+                ({t(`ui.channel.${destination.channel}`)}
+                {destination.isEnabled ? '' : `, ${t('ui.feed.paused')}`})
               </small>
             </label>
           ))
@@ -126,7 +140,7 @@ function FeedCard({
           void save(feed.id, enabled, routes);
         }}
       >
-        Save routing
+        {t('ui.feed.save')}
       </button>
     </article>
   );
@@ -140,13 +154,11 @@ function DeliveryList({
   retry?: (id: string) => Promise<void>;
   busy: boolean;
 }) {
+  const { t, formatDate } = useLocale();
   if (deliveries.length === 0)
     return (
-      <Empty title="No deliveries yet">
-        <p>
-          New feed items appear here after the first baseline has been recorded and a destination
-          has been selected.
-        </p>
+      <Empty title={t('ui.delivery.empty')}>
+        <p>{t('ui.delivery.emptyHelp')}</p>
       </Empty>
     );
   return (
@@ -157,22 +169,39 @@ function DeliveryList({
             <h3>
               {delivery.href ? (
                 <a href={delivery.href} target="_blank" rel="noreferrer">
-                  {delivery.title || 'Untitled item'}
+                  <bdi dir="auto">{delivery.title || t('ui.delivery.untitled')}</bdi>
                 </a>
               ) : (
-                delivery.title || 'Untitled item'
+                <bdi dir="auto">{delivery.title || t('ui.delivery.untitled')}</bdi>
               )}
             </h3>
-            <span className={`badge ${delivery.status}`}>{delivery.status}</span>
+            <span className={`badge ${delivery.status}`}>
+              {t(`ui.delivery.${delivery.status}`)}
+            </span>
           </div>
-          <p className="muted">
-            {delivery.feedLabel} → {delivery.destinationLabel}
-          </p>
           <div className="meta">
-            <span>{delivery.happenedAt}</span>
-            <span>{delivery.attempts} attempts</span>
+            <span>
+              {t('ui.delivery.feed')}:{' '}
+              <bdi dir="auto">{delivery.feedLabel ?? t('ui.delivery.removedFeed')}</bdi>
+            </span>
+            <span>
+              {t('ui.delivery.destination')}:{' '}
+              <bdi dir="auto">
+                {delivery.destinationLabel ?? t('ui.delivery.removedDestination')}
+              </bdi>
+            </span>
           </div>
-          {delivery.issue && <p className="status error">{delivery.issue}</p>}
+          <div className="meta">
+            <span>
+              <bdi>{formatDate(delivery.happenedAt)}</bdi>
+            </span>
+            <span>{t('ui.delivery.attempts', { count: delivery.attempts })}</span>
+          </div>
+          {delivery.issue && (
+            <p className="status error">
+              <bdi dir="auto">{localizeError(delivery.issue, t)}</bdi>
+            </p>
+          )}
           {retry && delivery.status === 'failed' && (
             <button
               type="button"
@@ -181,7 +210,7 @@ function DeliveryList({
                 void retry(delivery.id);
               }}
             >
-              Retry delivery
+              {t('ui.delivery.retry')}
             </button>
           )}
         </article>
@@ -191,6 +220,15 @@ function DeliveryList({
 }
 
 function OptionsPage() {
+  const {
+    t,
+    preference,
+    directionPreference,
+    setPreference,
+    setDirectionPreference,
+    formatDate,
+    formatNumber,
+  } = useLocale();
   const [section, setSection] = useState<Section>('feeds');
   const [viewer, setViewer] = useState<Viewer | null>(null);
   const [catalog, setCatalog] = useState<Catalog>(initialCatalog);
@@ -258,15 +296,15 @@ function OptionsPage() {
     else setAdmin(null);
   }, []);
   const perform = useCallback(
-    async (action: () => Promise<void>, success?: string): Promise<void> => {
+    async (action: () => Promise<void>, success?: UiMessageKey): Promise<void> => {
       setBusy(true);
       setNotice(null);
       try {
         await action();
         await refresh();
-        if (success) setNotice({ error: false, text: success });
+        if (success) setNotice({ kind: 'message', key: success });
       } catch (error: unknown) {
-        setNotice({ error: true, text: errorMessage(error) });
+        setNotice({ kind: 'error', value: error });
       } finally {
         setBusy(false);
       }
@@ -278,12 +316,11 @@ function OptionsPage() {
       const result = resultSchema.parse(
         await chrome.runtime.sendMessage({ type: 'signalpost:sync' }),
       );
-      if (!result.ok) throw new Error(result.message);
-      setNotice({ error: false, text: result.message });
+      setNotice({ kind: 'action', result });
     });
   }, [perform]);
   useEffect(() => {
-    void refresh().catch((error: unknown) => setNotice({ error: true, text: errorMessage(error) }));
+    void refresh().catch((error: unknown) => setNotice({ kind: 'error', value: error }));
     const changed = (changes: Record<string, chrome.storage.StorageChange>, area: string): void => {
       if (area === 'local' && changes['syncStatus']) void getSyncStatus().then(setSyncStatusState);
     };
@@ -329,7 +366,7 @@ function OptionsPage() {
       const api = await createApi();
       await api.destination.save.mutate(input);
       editDestination(null);
-    }, 'Destination saved.');
+    }, 'ui.notice.destinationSaved');
   }
   async function updateSettings(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -343,18 +380,20 @@ function OptionsPage() {
         const previous = await getSettings();
         if (previous.apiBaseUrl !== origin) await setSession(null);
         await saveSettings({ ...settings, apiBaseUrl: origin });
-      }, 'Settings saved. Sign in again if you changed servers.');
+      }, 'ui.notice.settingsSaved');
     } catch (error: unknown) {
-      setNotice({ error: true, text: errorMessage(error) });
+      setNotice({ kind: 'error', value: error });
     }
   }
   const sections: readonly Section[] = viewer?.isAdmin
     ? ['feeds', 'destinations', 'activity', 'admin', 'settings']
     : ['feeds', 'destinations', 'activity', 'settings'];
+  const noticeIsError =
+    notice?.kind === 'error' || (notice?.kind === 'action' && !notice.result.ok);
   return (
     <>
       <a className="skip" href="#main">
-        Skip to content
+        {t('ui.skip')}
       </a>
       <header>
         <div className="brand">
@@ -363,17 +402,19 @@ function OptionsPage() {
           </span>
           <div>
             <h1>Signalpost</h1>
-            <small>Your alerts. Your channels.</small>
+            <small>{t('ui.tagline')}</small>
           </div>
         </div>
         <div className="header-actions">
-          <span className="header-identity muted">{viewer?.email ?? 'Not signed in'}</span>
+          <span className="header-identity muted">
+            {viewer ? <bdi dir="ltr">{viewer.email}</bdi> : t('ui.signedOut')}
+          </span>
           <button
             type="button"
             onClick={() => dialog.current?.showModal()}
             aria-keyshortcuts="Control+k Meta+k"
           >
-            Commands <kbd>{modifier} K</kbd>
+            {t('ui.commands')} <kbd dir="ltr">{modifier} K</kbd>
           </button>
           <button
             type="button"
@@ -384,7 +425,7 @@ function OptionsPage() {
             }}
             aria-keyshortcuts="Control+Enter Meta+Enter"
           >
-            Sync Google Alerts
+            {t('ui.sync')}
           </button>
         </div>
       </header>
@@ -398,46 +439,52 @@ function OptionsPage() {
                 aria-current={section === item ? 'page' : undefined}
                 onClick={() => navigate(item)}
               >
-                {sectionLabels[item]}
+                {t(sectionLabels[item])}
               </button>
             ))}
           </>
           <div className="nav-foot">
-            Built for your desktop.
+            {t('ui.desktop')}
             <br />
             <a href="https://www.google.com/alerts" target="_blank" rel="noreferrer">
-              Open Google Alerts ↗
+              {t('ui.openAlerts')} <span aria-hidden="true">↗</span>
             </a>
           </div>
         </nav>
         <main id="main" aria-busy={busy}>
           <div className="section-intro">
             <h2 ref={heading} tabIndex={-1}>
-              {sectionLabels[section]}
+              {t(sectionLabels[section])}
             </h2>
           </div>
           <div aria-live="polite" aria-atomic="true">
             {notice && (
               <p
-                className={`status ${notice.error ? 'error' : ''}`}
-                role={notice.error ? 'alert' : 'status'}
+                className={`status ${noticeIsError ? 'error' : ''}`}
+                role={noticeIsError ? 'alert' : 'status'}
               >
-                {notice.text}
+                <bdi dir="auto">
+                  {notice.kind === 'message'
+                    ? t(notice.key)
+                    : notice.kind === 'action'
+                      ? translateActionResult(notice.result, t)
+                      : localizeError(notice.value, t)}
+                </bdi>
               </p>
             )}
           </div>
           {syncStatus && (
             <p className={`status ${syncStatus.state === 'error' ? 'error' : ''}`}>
-              {syncStatus.message} <small>· {new Date(syncStatus.at).toLocaleString()}</small>
+              <bdi dir="auto">{translateSyncStatus(syncStatus, t)}</bdi>{' '}
+              <small>
+                · <bdi>{formatDate(new Date(syncStatus.at))}</bdi>
+              </small>
             </p>
           )}
           {!viewer && section !== 'settings' && (
             <div className="card">
-              <h3>Connect your Signalpost account</h3>
-              <p>
-                Sign in with Google to keep your feeds and destinations together. Signing in to
-                Google Alerts alone does not sign you in here.
-              </p>
+              <h3>{t('ui.auth.connect')}</h3>
+              <p>{t('ui.auth.intro')}</p>
               <button
                 type="button"
                 className="primary"
@@ -445,38 +492,32 @@ function OptionsPage() {
                 onClick={() => {
                   void perform(async () => {
                     await signIn();
-                  }, 'Signed in to Signalpost.');
+                  }, 'ui.notice.signedIn');
                 }}
               >
-                Continue with Google
+                {t('ui.auth.continue')}
               </button>
-              <p className="field-help">For local setup, configure the server in Settings first.</p>
+              <p className="field-help">{t('ui.auth.localSetup')}</p>
             </div>
           )}
           {section === 'feeds' && (
             <>
-              <p className="muted">
-                Manage topics in Google Alerts. Signalpost imports the complete RSS catalog and
-                delivers new items to the destinations you choose.
-              </p>
+              <p className="muted">{t('ui.feed.intro')}</p>
               <div className="meta">
-                <span>{catalog.feeds.length} feeds</span>
-                <span>Last synced: {catalog.syncedAt}</span>
+                <span>{t('ui.feed.count', { count: catalog.feeds.length })}</span>
+                <span>
+                  {t('ui.feed.lastSynced')}: <bdi>{formatDate(catalog.syncedAt)}</bdi>
+                </span>
               </div>
               {catalog.feeds.length === 0 ? (
-                <Empty title="Start with a topic worth following">
+                <Empty title={t('ui.feed.start')}>
                   <ol>
-                    <li>Open Google Alerts and create an alert.</li>
-                    <li>
-                      Choose <strong>Deliver to → RSS feed</strong>.
-                    </li>
-                    <li>Press the Signalpost toolbar button to sync.</li>
-                    <li>Add a destination here and select it on the feed.</li>
+                    <li>{t('ui.feed.stepCreate')}</li>
+                    <li>{t('ui.feed.stepRss')}</li>
+                    <li>{t('ui.feed.stepSync')}</li>
+                    <li>{t('ui.feed.stepDestination')}</li>
                   </ol>
-                  <p className="muted">
-                    Email-only Google Alerts are not imported. The first fetch establishes a
-                    baseline; existing items are not sent.
-                  </p>
+                  <p className="muted">{t('ui.feed.baseline')}</p>
                 </Empty>
               ) : (
                 catalog.feeds.map((feed) => (
@@ -491,7 +532,7 @@ function OptionsPage() {
                         await api.feed.configure.mutate(
                           feedConfigureInput.parse({ feedId, enabled, destinationIds }),
                         );
-                      }, 'Feed routing saved.');
+                      }, 'ui.notice.routingSaved');
                     }}
                   />
                 ))
@@ -500,32 +541,30 @@ function OptionsPage() {
           )}
           {section === 'destinations' && viewer && (
             <>
-              <p className="muted">
-                Use an email address or a Slack incoming webhook. Delivery credentials are kept on
-                the server and never shown back in this app.
-              </p>
+              <p className="muted">{t('ui.destination.intro')}</p>
               <form
                 className="card stack"
                 onSubmit={(event) => {
                   void saveDestination(event).catch((error: unknown) =>
-                    setNotice({ error: true, text: errorMessage(error) }),
+                    setNotice({ kind: 'error', value: error }),
                   );
                 }}
               >
-                <h3>{editingDestination ? 'Edit destination' : 'Add destination'}</h3>
+                <h3>{t(editingDestination ? 'ui.destination.edit' : 'ui.destination.add')}</h3>
                 <label>
-                  Name
+                  {t('ui.destination.name')}
                   <input
                     required
                     maxLength={100}
+                    dir="auto"
                     value={label}
                     onChange={(event) => setLabel(event.currentTarget.value)}
-                    placeholder="My inbox or team news"
+                    placeholder={t('ui.destination.namePlaceholder')}
                     autoComplete="off"
                   />
                 </label>
                 <label>
-                  Channel
+                  {t('ui.destination.channel')}
                   <select
                     disabled={editingDestination !== null}
                     value={kind}
@@ -533,14 +572,15 @@ function OptionsPage() {
                       setKind(event.currentTarget.value === 'slack' ? 'slack' : 'email')
                     }
                   >
-                    <option value="email">Email</option>
-                    <option value="slack">Slack</option>
+                    <option value="email">{t('ui.channel.email')}</option>
+                    <option value="slack">{t('ui.channel.slack')}</option>
                   </select>
                 </label>
                 <label>
-                  {kind === 'email' ? 'Email address' : 'Slack incoming webhook URL'}
+                  {t(kind === 'email' ? 'ui.destination.email' : 'ui.destination.webhook')}
                   <input
                     type={kind === 'email' ? 'email' : 'url'}
+                    dir="ltr"
                     required={!editingDestination}
                     value={target}
                     onChange={(event) => setTarget(event.currentTarget.value)}
@@ -548,7 +588,7 @@ function OptionsPage() {
                     spellCheck={false}
                     placeholder={
                       editingDestination
-                        ? 'Leave blank to retain the existing destination'
+                        ? t('ui.destination.retain')
                         : kind === 'email'
                           ? 'you@example.com'
                           : 'https://hooks.slack.com/services/…'
@@ -556,9 +596,7 @@ function OptionsPage() {
                   />
                 </label>
                 {kind === 'slack' && (
-                  <p className="field-help">
-                    Create an incoming webhook in your own Slack workspace. Keep this URL private.
-                  </p>
+                  <p className="field-help">{t('ui.destination.webhookHelp')}</p>
                 )}
                 <label className="check">
                   <input
@@ -566,15 +604,15 @@ function OptionsPage() {
                     checked={destinationEnabled}
                     onChange={(event) => setDestinationEnabled(event.currentTarget.checked)}
                   />
-                  Enable delivery
+                  {t('ui.destination.enable')}
                 </label>
                 <div className="actions">
                   <button className="primary" disabled={busy} type="submit">
-                    {editingDestination ? 'Save changes' : 'Add destination'}
+                    {t(editingDestination ? 'ui.saveChanges' : 'ui.destination.add')}
                   </button>
                   {editingDestination && (
                     <button type="button" onClick={() => editDestination(null)}>
-                      Cancel
+                      {t('ui.cancel')}
                     </button>
                   )}
                 </div>
@@ -583,28 +621,41 @@ function OptionsPage() {
                 <article className="card" key={destination.id}>
                   <div className="card-header">
                     <div>
-                      <h3>{destination.label}</h3>
+                      <h3>
+                        <bdi dir="auto">{destination.label}</bdi>
+                      </h3>
                       <p className="muted">
-                        {destination.channel} · {destination.isEnabled ? 'Enabled' : 'Paused'}
+                        {t(`ui.channel.${destination.channel}`)} ·{' '}
+                        {t(destination.isEnabled ? 'ui.destination.enabled' : 'ui.feed.paused')}
                       </p>
                     </div>
                     <div className="actions">
                       <button type="button" onClick={() => editDestination(destination)}>
-                        Edit<span className="sr-only"> {destination.label}</span>
+                        {t('ui.edit')}
+                        <span className="sr-only">
+                          {' '}
+                          <bdi dir="auto">{destination.label}</bdi>
+                        </span>
                       </button>
                       <button
                         type="button"
                         className="danger"
                         disabled={busy}
                         onClick={() => {
-                          if (window.confirm(`Remove ${destination.label}? Its routing will stop.`))
+                          if (
+                            window.confirm(
+                              t('ui.destination.removeConfirm', {
+                                name: `\u2068${destination.label}\u2069`,
+                              }),
+                            )
+                          )
                             void perform(async () => {
                               const api = await createApi();
                               await api.destination.remove.mutate({ id: destination.id });
-                            }, 'Destination removed.');
+                            }, 'ui.notice.destinationRemoved');
                         }}
                       >
-                        Remove
+                        {t('ui.remove')}
                       </button>
                     </div>
                   </div>
@@ -614,10 +665,7 @@ function OptionsPage() {
           )}
           {section === 'activity' && viewer && (
             <>
-              <p className="muted">
-                Accepted means the email service or Slack accepted the message. It does not prove
-                the recipient read it.
-              </p>
+              <p className="muted">{t('ui.delivery.intro')}</p>
               <button
                 type="button"
                 disabled={busy}
@@ -625,7 +673,7 @@ function OptionsPage() {
                   void perform(refresh);
                 }}
               >
-                Refresh activity
+                {t('ui.delivery.refresh')}
               </button>
               <div className="separator">
                 <DeliveryList deliveries={deliveries} busy={busy} />
@@ -634,22 +682,23 @@ function OptionsPage() {
           )}
           {section === 'admin' && viewer?.isAdmin && admin && (
             <>
-              <p className="muted">
-                A server-wide operational view. Administrator access is checked by the server on
-                every request.
-              </p>
+              <p className="muted">{t('ui.admin.intro')}</p>
               <div className="stats">
-                {[
-                  ['Connected users', admin.userCount],
-                  ['Feeds', admin.feedCount],
-                  ['Destinations', admin.destinationCount],
-                  ['Pending', admin.pendingCount],
-                  ['Failed', admin.failedCount],
-                  ['Accepted', admin.acceptedCount],
-                ].map(([name, value]) => (
+                {(
+                  [
+                    ['ui.admin.users', admin.userCount],
+                    ['ui.admin.feeds', admin.feedCount],
+                    ['ui.admin.destinations', admin.destinationCount],
+                    ['ui.delivery.pending', admin.pendingCount],
+                    ['ui.delivery.failed', admin.failedCount],
+                    ['ui.delivery.accepted', admin.acceptedCount],
+                  ] as const
+                ).map(([name, value]) => (
                   <div className="stat" key={name}>
-                    <span>{name}</span>
-                    <strong>{value}</strong>
+                    <span>{t(name)}</span>
+                    <strong>
+                      <bdi>{formatNumber(value)}</bdi>
+                    </strong>
                   </div>
                 ))}
               </div>
@@ -660,10 +709,10 @@ function OptionsPage() {
                   void perform(refresh);
                 }}
               >
-                Refresh administration
+                {t('ui.admin.refresh')}
               </button>
               <div className="separator">
-                <h3>Recent deliveries</h3>
+                <h3>{t('ui.admin.recent')}</h3>
                 <DeliveryList
                   deliveries={admin.deliveries}
                   busy={busy}
@@ -671,7 +720,7 @@ function OptionsPage() {
                     await perform(async () => {
                       const api = await createApi();
                       await api.admin.retry.mutate({ deliveryId });
-                    }, 'Delivery scheduled for another attempt.');
+                    }, 'ui.notice.retry');
                   }}
                 />
               </div>
@@ -679,17 +728,58 @@ function OptionsPage() {
           )}
           {section === 'settings' && (
             <>
+              <div className="card stack">
+                <h3>{t('ui.settings.appearance')}</h3>
+                <label>
+                  {t('ui.settings.language')}
+                  <select
+                    value={preference}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      void setPreference(isLanguage(value) ? value : 'auto').catch(
+                        (error: unknown) => setNotice({ kind: 'error', value: error }),
+                      );
+                    }}
+                  >
+                    <option value="auto">{t('ui.settings.autoLanguage')}</option>
+                    {Object.entries(locales).map(([code, locale]) => (
+                      <option key={code} value={code} lang={code}>
+                        {locale.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p className="field-help">{t('ui.settings.languageHelp')}</p>
+                <label>
+                  {t('ui.settings.direction')}
+                  <select
+                    value={directionPreference}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      void setDirectionPreference(
+                        value === 'ltr' || value === 'rtl' ? value : 'auto',
+                      ).catch((error: unknown) => setNotice({ kind: 'error', value: error }));
+                    }}
+                  >
+                    <option value="auto">{t('ui.settings.autoDirection')}</option>
+                    <option value="ltr">{t('ui.settings.ltr')}</option>
+                    <option value="rtl">{t('ui.settings.rtl')}</option>
+                  </select>
+                </label>
+                <p className="field-help">{t('ui.settings.directionHelp')}</p>
+              </div>
               <form
                 className="card stack"
                 onSubmit={(event) => {
                   void updateSettings(event);
                 }}
               >
-                <h3>Connection</h3>
+                <h3>{t('ui.settings.connection')}</h3>
                 <label>
-                  Server address
+                  {t('ui.settings.server')}
                   <input
                     type="url"
+                    dir="ltr"
                     required
                     value={settings.apiBaseUrl}
                     onChange={(event) => {
@@ -700,8 +790,7 @@ function OptionsPage() {
                   />
                 </label>
                 <p className="field-help">
-                  Use HTTPS for a remote server. Local development defaults to
-                  http://localhost:3000. Changing servers signs you out.
+                  {t('ui.settings.serverHelp')} <bdi dir="ltr">http://localhost:3000</bdi>.
                 </p>
                 <label className="check">
                   <input
@@ -712,22 +801,24 @@ function OptionsPage() {
                       setSettings((previous) => ({ ...previous, autoSync }));
                     }}
                   />
-                  Automatically sync when Google Alerts loads or changes
+                  {t('ui.settings.autoSync')}
                 </label>
-                <p className="field-help">
-                  The manual toolbar button remains available. Google Alerts must be open for
-                  automatic catalog sync; server delivery continues with your browser closed.
-                </p>
+                <p className="field-help">{t('ui.settings.autoSyncHelp')}</p>
                 <button type="submit" className="primary" disabled={busy}>
-                  Save settings
+                  {t('ui.settings.save')}
                 </button>
               </form>
               <div className="card">
-                <h3>Google sign-in</h3>
+                <h3>{t('ui.auth.heading')}</h3>
                 <p>
-                  {viewer
-                    ? `Signed in as ${viewer.displayName} (${viewer.email}).`
-                    : 'Sign in to Signalpost using Google. Your Google Alerts page has its own independent sign-in.'}
+                  {viewer ? (
+                    <>
+                      {t('ui.auth.signedInAs')} <bdi dir="auto">{viewer.displayName}</bdi> (
+                      <bdi dir="ltr">{viewer.email}</bdi>).
+                    </>
+                  ) : (
+                    t('ui.auth.independent')
+                  )}
                 </p>
                 <button
                   type="button"
@@ -747,51 +838,54 @@ function OptionsPage() {
                           }
                         } else await signIn();
                       },
-                      viewer ? 'Signed out.' : 'Signed in.',
+                      viewer ? 'ui.notice.signedOut' : 'ui.notice.signedIn',
                     );
                   }}
                 >
-                  {viewer ? 'Sign out of Signalpost' : 'Continue with Google'}
+                  {t(viewer ? 'ui.auth.signOut' : 'ui.auth.continue')}
                 </button>
-                <p className="field-help">
-                  The session is kept in trusted extension memory and is cleared when the browser
-                  closes.
-                </p>
+                <p className="field-help">{t('ui.auth.sessionHelp')}</p>
                 <details className="separator">
-                  <summary>Developer setup: OAuth callback</summary>
-                  <p className="code">{chrome.identity.getRedirectURL('auth')}</p>
-                  <p className="field-help">
-                    Allow this exact callback in the server's extension redirect configuration. Keep
-                    a stable extension ID for repeatable local setup.
+                  <summary>{t('ui.auth.callback')}</summary>
+                  <p className="code" dir="ltr">
+                    {chrome.identity.getRedirectURL('auth')}
                   </p>
+                  <p className="field-help">{t('ui.auth.callbackHelp')}</p>
                 </details>
               </div>
               <div className="card">
-                <h3>Keyboard access</h3>
-                <p>
-                  <kbd>{modifier} K</kbd> Commands · <kbd>{modifier} Enter</kbd> Sync ·{' '}
-                  <kbd>{modifier} ,</kbd> Settings · <kbd>?</kbd> Help · <kbd>Esc</kbd> Close
-                </p>
+                <h3>{t('ui.keyboard.heading')}</h3>
+                <ul className="shortcut-list">
+                  {(
+                    [
+                      [`${modifier} K`, 'ui.commands'],
+                      [`${modifier} Enter`, 'ui.keyboard.sync'],
+                      [`${modifier} ,`, 'ui.section.settings'],
+                      ['?', 'ui.keyboard.help'],
+                      ['Esc', 'ui.keyboard.close'],
+                    ] as const
+                  ).map(([key, label]) => (
+                    <li key={key}>
+                      <kbd dir="ltr">{key}</kbd>
+                      <span>{t(label)}</span>
+                    </li>
+                  ))}
+                </ul>
                 <p className="muted">
-                  Shortcuts do not intercept typing. Use Tab and Shift+Tab to reach every control.
-                  Browser-wide shortcuts can be changed at chrome://extensions/shortcuts.
+                  {t('ui.keyboard.hint')} <bdi dir="ltr">chrome://extensions/shortcuts</bdi>.
                 </p>
               </div>
               {viewer && catalog.sourceId && (
                 <div className="card danger-zone">
-                  <h3>Clear synced feeds</h3>
-                  <p>
-                    If you removed every RSS alert in Google, explicitly clear the catalog here.
-                    Signalpost will not interpret an unknown or loading Google page as a request to
-                    delete your feeds.
-                  </p>
+                  <h3>{t('ui.clear.heading')}</h3>
+                  <p>{t('ui.clear.help')}</p>
                   <label className="check">
                     <input
                       type="checkbox"
                       checked={clearConfirmed}
                       onChange={(event) => setClearConfirmed(event.currentTarget.checked)}
                     />
-                    I want to remove all synced feeds and stop their routing.
+                    {t('ui.clear.confirm')}
                   </label>
                   <button
                     type="button"
@@ -806,10 +900,10 @@ function OptionsPage() {
                             catalogReplaceInput.parse({ sourceId, feeds: [] }),
                           );
                           setClearConfirmed(false);
-                        }, 'The synced catalog was cleared. Your Google Alerts were not changed.');
+                        }, 'ui.notice.cleared');
                     }}
                   >
-                    Clear all synced feeds
+                    {t('ui.clear.action')}
                   </button>
                 </div>
               )}
@@ -819,15 +913,19 @@ function OptionsPage() {
       </div>
       <dialog ref={dialog} aria-labelledby="commands-title">
         <div className="card-header">
-          <h2 id="commands-title">Commands</h2>
-          <button type="button" onClick={() => dialog.current?.close()} aria-label="Close commands">
-            Close
+          <h2 id="commands-title">{t('ui.commands')}</h2>
+          <button
+            type="button"
+            onClick={() => dialog.current?.close()}
+            aria-label={t('ui.commands.close')}
+          >
+            {t('ui.keyboard.close')}
           </button>
         </div>
         <div className="stack">
           {sections.map((item) => (
             <button type="button" key={item} onClick={() => navigate(item)}>
-              {sectionLabels[item]}
+              {t(sectionLabels[item])}
             </button>
           ))}
           <button
@@ -837,12 +935,18 @@ function OptionsPage() {
               void sync();
             }}
           >
-            Sync Google Alerts <kbd>{modifier} Enter</kbd>
+            {t('ui.sync')} <kbd dir="ltr">{modifier} Enter</kbd>
           </button>
         </div>
-        <p className="field-help">Use Tab, Shift+Tab and Enter. Escape closes this dialog.</p>
+        <p className="field-help">{t('ui.commands.help')}</p>
       </dialog>
     </>
   );
 }
-export default OptionsPage;
+export default function Options() {
+  return (
+    <LocaleProvider>
+      <OptionsPage />
+    </LocaleProvider>
+  );
+}

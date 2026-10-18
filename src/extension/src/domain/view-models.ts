@@ -24,24 +24,24 @@ export interface Feed {
   readonly address: string;
   readonly isEnabled: boolean;
   readonly routes: readonly string[];
-  readonly lastChecked: string;
-  readonly nextCheck: string;
+  readonly lastChecked: Date | null;
+  readonly nextCheck: Date | null;
   readonly issue: string | null;
 }
 export interface Delivery {
   readonly id: string;
   readonly title: string;
   readonly href: string | null;
-  readonly feedLabel: string;
-  readonly destinationLabel: string;
+  readonly feedLabel: string | null;
+  readonly destinationLabel: string | null;
   readonly status: 'pending' | 'accepted' | 'failed' | 'cancelled';
   readonly attempts: number;
-  readonly happenedAt: string;
+  readonly happenedAt: Date | null;
   readonly issue: string | null;
 }
 export interface Catalog {
   readonly sourceId: string | null;
-  readonly syncedAt: string;
+  readonly syncedAt: Date | null;
   readonly feeds: readonly Feed[];
 }
 export interface AdminOverview {
@@ -53,10 +53,8 @@ export interface AdminOverview {
   readonly acceptedCount: number;
   readonly deliveries: readonly Delivery[];
 }
-export function timeLabel(value: string | null): string {
-  if (!value) return 'Not yet';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? 'Unknown' : date.toLocaleString();
+export function parseTime(value: string | null): Date | null {
+  return value === null ? null : new Date(value);
 }
 export function mapViewer(dto: UserDto): Viewer {
   return {
@@ -72,15 +70,15 @@ export function mapDestination(dto: DestinationDto): Destination {
 export function mapCatalog(dto: CatalogDto): Catalog {
   return {
     sourceId: dto.sourceId,
-    syncedAt: timeLabel(dto.lastSyncedAt),
+    syncedAt: parseTime(dto.lastSyncedAt),
     feeds: dto.feeds.map((feed) => ({
       id: feed.id,
       label: feed.query,
       address: feed.feedUrl,
       isEnabled: feed.enabled,
       routes: [...feed.destinationIds],
-      lastChecked: timeLabel(feed.lastFetchedAt),
-      nextCheck: timeLabel(feed.nextPollAt),
+      lastChecked: parseTime(feed.lastFetchedAt),
+      nextCheck: parseTime(feed.nextPollAt),
       issue: feed.lastError,
     })),
   };
@@ -102,14 +100,11 @@ export function mapDelivery(
     id: dto.id,
     title: dto.title,
     href: safeLink(dto.itemUrl),
-    feedLabel:
-      catalog.feeds.find((feed) => feed.id === dto.feedId)?.label ?? "Removed or other user's feed",
-    destinationLabel:
-      destinations.find((target) => target.id === dto.destinationId)?.label ??
-      "Removed or other user's destination",
+    feedLabel: catalog.feeds.find((feed) => feed.id === dto.feedId)?.label ?? null,
+    destinationLabel: destinations.find((target) => target.id === dto.destinationId)?.label ?? null,
     status: dto.state,
     attempts: dto.attempts,
-    happenedAt: timeLabel(dto.acceptedAt ?? dto.updatedAt),
+    happenedAt: parseTime(dto.acceptedAt ?? dto.updatedAt),
     issue: dto.lastError,
   };
 }

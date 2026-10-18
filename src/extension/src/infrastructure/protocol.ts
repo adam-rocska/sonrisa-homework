@@ -21,7 +21,14 @@ export const contextSchema = z.object({
   autoSync: z.boolean(),
   boundSourceId: z.string().optional(),
 });
-export const resultSchema = z.object({ ok: z.boolean(), message: z.string() });
+export const resultSchema = z.object({
+  ok: z.boolean(),
+  message: z.string(),
+  messageKey: z.string().optional(),
+  messageParams: z.record(z.union([z.string(), z.number()])).optional(),
+  feedCount: z.number().int().nonnegative().optional(),
+  emailOnlyCount: z.number().int().nonnegative().optional(),
+});
 export type ActionResult = z.infer<typeof resultSchema>;
 export function isAlertsUrl(value: string | undefined): boolean {
   if (!value) return false;

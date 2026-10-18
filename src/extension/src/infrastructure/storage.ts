@@ -18,6 +18,9 @@ export type AuthSession = z.infer<typeof authSchema>;
 export const syncStatusSchema = z.object({
   state: z.enum(['idle', 'syncing', 'success', 'error']),
   message: z.string(),
+  messageKey: z.string().optional(),
+  messageParams: z.record(z.union([z.string(), z.number()])).optional(),
+  emailOnlyCount: z.number().int().nonnegative().optional(),
   at: z.string(),
   feedCount: z.number().int().nonnegative().optional(),
 });

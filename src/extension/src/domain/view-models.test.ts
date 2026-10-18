@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mapCatalog, mapDelivery, mapDestination, mapViewer, timeLabel } from './view-models';
+import { mapCatalog, mapDelivery, mapDestination, mapViewer, parseTime } from './view-models';
 describe('transport to extension model boundary', () => {
   it('maps roles and destination kinds into UI concepts', () => {
     expect(mapViewer({ id: 'u', name: '', email: 'a@example.com', role: 'admin' })).toMatchObject({
@@ -41,8 +41,9 @@ describe('transport to extension model boundary', () => {
     });
     routes.push('changed');
     expect(result.feeds[0]?.routes).toEqual(['d']);
-    expect(timeLabel(null)).toBe('Not yet');
-    expect(timeLabel('nonsense')).toBe('Unknown');
+    expect(parseTime(null)).toBeNull();
+    expect(Number.isNaN(parseTime('nonsense')?.getTime())).toBe(true);
+    expect(result.feeds[0]?.nextCheck).toEqual(new Date('2026-10-18T00:00:00Z'));
   });
   it('never renders dangerous feed item URL schemes as hyperlinks', () => {
     const delivery = mapDelivery(
@@ -60,7 +61,7 @@ describe('transport to extension model boundary', () => {
         createdAt: 'x',
         updatedAt: 'x',
       },
-      { sourceId: null, syncedAt: 'Not yet', feeds: [] },
+      { sourceId: null, syncedAt: null, feeds: [] },
       [],
     );
     expect(delivery.href).toBeNull();
